@@ -1,0 +1,15 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target 'Sendpushlib_Example', :exclusive => true do
+  pod "Sendpushlib", :path => "../"
+end
+
+target 'Sendpushlib_Tests', :exclusive => true do
+  pod "Sendpushlib", :path => "../"
+
+  pod 'Quick', '~> 0.3.1'
+  pod 'Nimble'
+  pod 'FBSnapshotTestCase'
+  pod 'Nimble-Snapshots'
+end

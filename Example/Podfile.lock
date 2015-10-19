@@ -1,15 +1,20 @@
 PODS:
+  - CryptoSwift (0.0.14)
   - FBSnapshotTestCase (1.8.1)
+  - JSONWebToken (1.4.0):
+    - CryptoSwift (= 0.0.14)
   - Nimble (0.4.2)
   - Nimble-Snapshots (0.4.0):
     - FBSnapshotTestCase (~> 1.7)
     - Nimble (~> 0.4)
     - Quick (~> 0.3)
   - Quick (0.3.1)
-  - Sendpushlib (0.1.0)
+  - Sendpushlib (0.1.0):
+    - JSONWebToken (= 1.4.0)
 
 DEPENDENCIES:
   - FBSnapshotTestCase
+  - JSONWebToken (~> 1.4.0)
   - Nimble
   - Nimble-Snapshots
   - Quick (~> 0.3.1)
@@ -20,10 +25,12 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  CryptoSwift: 5a6b725e2ad65a789f5f435dd434d38eb2c40b46
   FBSnapshotTestCase: 3dc3899168747a0319c5278f5b3445c13a6532dd
+  JSONWebToken: 75ccb5b96a37bb250fdda42f5e224c19f123b920
   Nimble: 49b7a7da8919f42823d37c6d68cc6d15a7009f32
   Nimble-Snapshots: 216ae8c0ea3f4105be1606749fe15d8b2138af40
   Quick: 824572d3d198d51e52cf4aa722cebf7e59952a35
-  Sendpushlib: c5eb03ec1ad132d51f72795bb3c6f8edfe152480
+  Sendpushlib: 8a30027992a8508b278b4a6822a96cdce52f4767
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0

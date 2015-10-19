@@ -20,11 +20,11 @@ Pod::Spec.new do |s|
     This library needs to be included in your iOS app to allow sendpush functionality.
                        DESC
 
-  s.homepage         = "git@github.com:sendpush/sendpush-ios-lib.git"
+  s.homepage         = "https://github.com/sendpush/sendpush-ios-lib"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Bob Axford" => "bob@figjamit.com.au" }
-  s.source           = { :git => "git@github.com:sendpush/sendpush-ios-lib.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/sendpush/sendpush-ios-lib", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '8.0'
@@ -38,5 +38,5 @@ Pod::Spec.new do |s|
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
-  # s.dependency 'JSONWebToken', '1.3.0'
+  s.dependency 'JSONWebToken', '1.4.0'
 end

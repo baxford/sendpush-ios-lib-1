@@ -17,7 +17,13 @@ public class SendPush {
     
     // Instance vars
     var platformToken: String?
+    var jwt: String?
+    
+    var appKey: String?
+    var platformKey: String?
+
     var username: String?
+    var token: String?
     
     /*
     ** bootstrap
@@ -30,12 +36,16 @@ public class SendPush {
         if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
             myDict = NSDictionary(contentsOfFile: path)
         }
-
+        
         if let dict = myDict {
-            // Use your dict here
-            let sendpushConfig = dict.valueForKey("SendPush")
+            // Use /Users/bob/Downloads/aucomfigjamitpush (3).mobileprovisionyour dict here
+            let sendpushConfig = dict.valueForKey("Sendpush")
+            let apiUrl = sendpushConfig?.valueForKey("apiUrl") as? String
+            let jwt = sendpushConfig?.valueForKey("jwt") as? String
+            let apiBase = apiUrl!
+        
             
-            if let platformToken = dict.valueForKey("PlatformToken") as? String {
+            if let platformToken = sendpushConfig?.valueForKey("PlatformToken") as? String {
                 self.jwt = platformToken
             } else {
                 print("SendPush Exception: No PlatformToken in info.plist")
@@ -51,7 +61,7 @@ public class SendPush {
     }
     
     public func setupPush() {
-        let settings = UIUserNotificationSettings(forTypes: UIUserNotificationType.Badge | UIUserNotificationType.Sound | UIUserNotificationType.Alert, categories: nil)
+        let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().registerForRemoteNotifications()
     }
@@ -69,7 +79,7 @@ public class SendPush {
             
             postBody(url!, body: body) { (data, response, error) in
                 let s = NSString(data: data, encoding: NSUTF8StringEncoding)
-                println("registerUser: \(s)")
+                print("registerUser: \(s)")
             }
             
         }
@@ -121,7 +131,7 @@ public class SendPush {
     }
     
     public func didFailToRegisterForRemoteNotificationsWithError(error: NSError) {
-        println("Failed to register for remote with error \(error)")
+        print("Failed to register for remote with error \(error)")
     }
     
     public func didRegisterUserNotificationSettings(notificationSettings: UIUserNotificationSettings) {
@@ -144,7 +154,7 @@ public class SendPush {
         var error: NSError?
         let json = NSJSONSerialization.dataWithJSONObject(body, options: NSJSONWritingOptions(0), error: &error)
         if let error = error {
-            println("SendPush Exception: Serializing json \(error)")
+            print("SendPush Exception: Serializing json \(error)")
             return
         }
         

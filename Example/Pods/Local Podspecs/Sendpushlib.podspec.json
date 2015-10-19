@@ -1,15 +1,15 @@
 {
   "name": "Sendpushlib",
   "version": "0.1.0",
-  "summary": "A short description of Sendpushlib.",
-  "description": "",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/Sendpushlib",
+  "summary": "Library for use with Sendpush",
+  "description": "This library needs to be included in your iOS app to allow sendpush functionality.",
+  "homepage": "https://github.com/sendpush/sendpush-ios-lib",
   "license": "MIT",
   "authors": {
     "Bob Axford": "bob@figjamit.com.au"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/Sendpushlib.git",
+    "git": "https://github.com/sendpush/sendpush-ios-lib",
     "tag": "0.1.0"
   },
   "platforms": {
@@ -20,6 +20,11 @@
   "resource_bundles": {
     "Sendpushlib": [
       "Pod/Assets/*.png"
+    ]
+  },
+  "dependencies": {
+    "JSONWebToken": [
+      "1.4.0"
     ]
   }
 }

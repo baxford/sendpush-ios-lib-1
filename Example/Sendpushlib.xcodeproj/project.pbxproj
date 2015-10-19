@@ -13,9 +13,9 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		C25DEA284DE61F6CC4406C0B /* Pods_Sendpushlib_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC4F6DA91A217B16781DD393 /* Pods_Sendpushlib_Tests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C25DEA284DE61F6CC4406C0B /* Pods_Sendpushlib_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC4F6DA91A217B16781DD393 /* Pods_Sendpushlib_Tests.framework */; };
 		C442E9481BD4CBA700285B4D /* Sendpushlib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C442E9471BD4CBA700285B4D /* Sendpushlib.framework */; };
-		DECBD972D22940371136877D /* Pods_Sendpushlib_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFD5D60F71BF58DC75FD2D27 /* Pods_Sendpushlib_Example.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		DECBD972D22940371136877D /* Pods_Sendpushlib_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFD5D60F71BF58DC75FD2D27 /* Pods_Sendpushlib_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */

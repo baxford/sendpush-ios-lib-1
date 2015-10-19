@@ -1,0 +1,6 @@
+framework module Sendpushlib {
+  umbrella header "Sendpushlib-umbrella.h"
+
+  export *
+  module * { export * }
+}

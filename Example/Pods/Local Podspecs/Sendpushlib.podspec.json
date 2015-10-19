@@ -1,0 +1,25 @@
+{
+  "name": "Sendpushlib",
+  "version": "0.1.0",
+  "summary": "A short description of Sendpushlib.",
+  "description": "",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/Sendpushlib",
+  "license": "MIT",
+  "authors": {
+    "Bob Axford": "bob@figjamit.com.au"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/Sendpushlib.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "resource_bundles": {
+    "Sendpushlib": [
+      "Pod/Assets/*.png"
+    ]
+  }
+}

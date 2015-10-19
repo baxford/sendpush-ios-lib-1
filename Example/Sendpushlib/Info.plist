@@ -24,10 +24,12 @@
 	<true/>
 	<key>SendPush</key>
 	<dict>
-		<key>ApplicationKey</key>
-		<string></string>
-		<key>PlatformKey</key>
-		<string></string>
+		<key>APIUrl</key>
+		<string>http://localhost:3000</string>
+		<key>PlatformToken</key>
+		<string>pt</string>
+		<key>PlatformSecret</key>
+		<string>sec</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

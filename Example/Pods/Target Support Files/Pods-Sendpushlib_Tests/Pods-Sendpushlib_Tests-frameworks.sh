@@ -89,7 +89,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Sendpushlib_Tests/Sendpushlib.framework"
   install_framework "Pods-Sendpushlib_Tests/FBSnapshotTestCase.framework"
   install_framework "Pods-Sendpushlib_Tests/Nimble.framework"
-  install_framework "Pods-Sendpushlib_Tests/Nimble_Snapshots.framework"
   install_framework "Pods-Sendpushlib_Tests/Quick.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -98,6 +97,5 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Sendpushlib_Tests/Sendpushlib.framework"
   install_framework "Pods-Sendpushlib_Tests/FBSnapshotTestCase.framework"
   install_framework "Pods-Sendpushlib_Tests/Nimble.framework"
-  install_framework "Pods-Sendpushlib_Tests/Nimble_Snapshots.framework"
   install_framework "Pods-Sendpushlib_Tests/Quick.framework"
 fi

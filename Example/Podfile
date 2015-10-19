@@ -9,8 +9,8 @@ end
 target 'Sendpushlib_Tests', :exclusive => true do
   pod "Sendpushlib", :path => "../"
 
-  pod 'Quick', '~> 0.3.1'
-  pod 'Nimble'
+  pod 'Quick', '~> 0.7.0'
+  pod 'Nimble', '~> 2.0.0'
   pod 'FBSnapshotTestCase'
-  pod 'Nimble-Snapshots'
+
 end

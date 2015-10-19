@@ -13,11 +13,14 @@ import Sendpushlib
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var sendpush: SendPush?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        let sendPush = SendPush.push.bootstrap()
+        // setup the sendpush library
+        let sendpush = SendPush.push.bootstrap()
+        // request push notifications
+        sendpush.setupPush()
+        self.sendpush = sendpush
         return true
     }
 
@@ -44,8 +47,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // implemented in your application delegate
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData!) {
-    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        sendpush?.registerDevice(deviceToken)
     }
 
 }

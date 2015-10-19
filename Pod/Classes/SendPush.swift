@@ -59,16 +59,51 @@ public class SendPush {
             debugPrint("Unable to get SendPush config from info.plist")
         }
         
-
+        print("Init sendpush")
         // Return self for chainable interface
         return self
     }
     
     public func setupPush() {
+        UIApplication.sharedApplication().registerForRemoteNotifications()
         let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-        UIApplication.sharedApplication().registerForRemoteNotifications()
+
     }
+
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        self.registerDevice(deviceToken)
+    }
+    
+    public func registerDevice(deviceToken: NSData!) {
+        
+        let url = NSURL(string: "\(self.apiUrl)/devices")
+        
+        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
+        
+        let deviceTokenString: String = ( deviceToken.description as NSString )
+            .stringByTrimmingCharactersInSet( characterSet )
+            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+
+        
+        let body = [
+            "device_platform": "ios",
+            "device_type": "TODO",
+            "model":"TODO",
+            "token": deviceTokenString,
+            "timezone":"+1000",
+            "language":"en"
+        ]
+        
+        
+        postBody(url!, body: body) { (data, response, error) in
+            let s = NSString(data: data, encoding: NSUTF8StringEncoding)
+            print("registerUser: \(s)")
+        }
+            
+        
+    }
+    
     
     public func registerUser(username: String, tags: [String: String]?) {
         self.username = username

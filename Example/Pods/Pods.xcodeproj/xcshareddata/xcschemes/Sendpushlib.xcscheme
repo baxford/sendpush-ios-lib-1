@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'B14F9E46A28C58FA8BE5EC05'
+               BlueprintIdentifier = 'B99B2D8F2C8F93FD2D34FD4E'
                BlueprintName = 'Sendpushlib'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'Sendpushlib.framework'>

@@ -65,10 +65,16 @@ public class SendPush {
     }
     
     public func setupPush() {
-        UIApplication.sharedApplication().registerForRemoteNotifications()
-        let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        let prefs = NSUserDefaults.standardUserDefaults()
+        let optedInForPush = prefs.boolForKey("sendPushOptedIn")
+        if (optedInForPush) {
 
+        } else {
+            // request push notifications
+            UIApplication.sharedApplication().registerForRemoteNotifications()
+            let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+            UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        }
     }
 
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -76,8 +82,8 @@ public class SendPush {
     }
     
     public func registerDevice(deviceToken: NSData!) {
-        
-        let url = NSURL(string: "\(self.apiUrl)/devices")
+        let urlStr = "\(self.apiUrl!)/app/devices"
+        let url = NSURL(string: urlStr)
         
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
         
@@ -97,6 +103,9 @@ public class SendPush {
         
         
         postBody(url!, body: body) { (data, response, error) in
+            let prefs = NSUserDefaults.standardUserDefaults()
+
+            prefs.setBool(true, forKey: "sendPushOptedIn")
             let s = NSString(data: data, encoding: NSUTF8StringEncoding)
             print("registerUser: \(s)")
         }
@@ -146,7 +155,7 @@ public class SendPush {
     
     public func didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: NSData) {
         
-        let url = NSURL(string: "\(self.apiUrl)/devices")
+        let url = NSURL(string: "\(self.apiUrl)/app/devices")
         
         // Clean up device token
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
@@ -192,6 +201,9 @@ public class SendPush {
         
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
+            if let err = error {
+                print("Error \(err)")
+            }
             print("Response: \(response)")
             let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("Body: \(strData)")

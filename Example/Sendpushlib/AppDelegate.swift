@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // request push notifications
         sendpush.setupPush()
         self.sendpush = sendpush
+
         return true
     }
 
@@ -48,7 +49,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // implemented in your application delegate
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        sendpush?.registerDevice(deviceToken)
+        if let sp = sendpush {
+         sp.registerDevice(deviceToken)
+        }
+    }
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
+        print("Couldn't register: \(error)")
     }
 
 }

@@ -1,22 +1,22 @@
 PODS:
   - CryptoSwift (0.0.14)
-  - FBSnapshotTestCase (2.0.5):
-    - FBSnapshotTestCase/SwiftSupport (= 2.0.5)
-  - FBSnapshotTestCase/Core (2.0.5)
-  - FBSnapshotTestCase/SwiftSupport (2.0.5):
+  - FBSnapshotTestCase (2.0.7):
+    - FBSnapshotTestCase/SwiftSupport (= 2.0.7)
+  - FBSnapshotTestCase/Core (2.0.7)
+  - FBSnapshotTestCase/SwiftSupport (2.0.7):
     - FBSnapshotTestCase/Core
   - JSONWebToken (1.4.0):
     - CryptoSwift (= 0.0.14)
-  - Nimble (2.0.0)
-  - Quick (0.7.0)
+  - Nimble (3.0.0)
+  - Quick (0.8.0)
   - Sendpushlib (0.1.0):
     - JSONWebToken (= 1.4.0)
 
 DEPENDENCIES:
-  - FBSnapshotTestCase (~> 2.0.5)
+  - FBSnapshotTestCase (~> 2.0.7)
   - JSONWebToken (~> 1.4.0)
-  - Nimble (~> 2.0.0)
-  - Quick (~> 0.7.0)
+  - Nimble (~> 3.0.0)
+  - Quick (~> 0.8.0)
   - Sendpushlib (from `../`)
 
 EXTERNAL SOURCES:
@@ -25,10 +25,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CryptoSwift: 5a6b725e2ad65a789f5f435dd434d38eb2c40b46
-  FBSnapshotTestCase: 6917deb01d0556dd544536f9eb34e0cf26f904d5
+  FBSnapshotTestCase: 7e85180d0d141a0cf472352edda7e80d7eaeb547
   JSONWebToken: 75ccb5b96a37bb250fdda42f5e224c19f123b920
-  Nimble: 472e75466819eb8c06299233e87c694a9b51328a
-  Quick: 906d8aa995ee0afa96f1f7f01170f40fccfa5898
+  Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926
+  Quick: 563d0f6ec5f72e394645adb377708639b7dd38ab
   Sendpushlib: 8a30027992a8508b278b4a6822a96cdce52f4767
 
 COCOAPODS: 0.39.0

@@ -25,11 +25,11 @@
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
-		<string>http://localhost:3000</string>
+		<string>http://baxford.ngrok.io</string>
 		<key>PlatformToken</key>
-		<string>pt</string>
+		<string>1</string>
 		<key>PlatformSecret</key>
-		<string>sec</string>
+		<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

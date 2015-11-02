@@ -36,11 +36,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clearUsername(sender: AnyObject) {
-        if let un = username.text {
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            let tags = ["tag":"value"]
-            appDelegate.setUsername(un, tags: tags)
-        }
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.clearUsername()
     }
     
     @IBAction func sendPushToUsername(sender: AnyObject) {

@@ -228,8 +228,8 @@ public class SendPush {
     
     public func sendPushToUsername(username: String, pushMessage: String) {
         //localhost:3000/app/send/username/terry/test
-        let urlStr = "\(self.apiUrl!)/app/send/\(username)/\(pushMessage)"
-        let url = NSURL(string: urlStr)
+        let urlStr = "\(self.apiUrl!)/app/send/username/\(username)/\(pushMessage)"
+        let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         
         var body = [String: String]()
         
@@ -246,12 +246,9 @@ public class SendPush {
                 if let parseJSON = json {
                             // Okay, the parsedJSON is here, let's get the values out of it
                     if let jsonData = parseJSON["data"] {
-                        let un = jsonData["username"] as? NSString
-                        let prefs = NSUserDefaults.standardUserDefaults()
-                                
-                        prefs.setValue(un!, forKey: "sendPushUsername")
-                        
-                        print("Success: \(un!)")
+                        if let status = jsonData as? String {
+                            print("Success: \(status)")
+                        }
                     }
                 } else {
                     // the json object was nil, something went worng. Maybe the server isn't running?

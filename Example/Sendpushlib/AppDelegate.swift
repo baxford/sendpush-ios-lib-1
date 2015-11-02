@@ -62,6 +62,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sp.registerUser(username, tags: tags)
         }
     }
+    func clearUsername() {
+        if let sp = sendpush {
+            sp.unregisterUser()
+        }
+    }
     func sendPushToUsername(username: String, pushMessage: String) {
         if let sp = sendpush {
             sp.sendPushToUsername(username, pushMessage: pushMessage)

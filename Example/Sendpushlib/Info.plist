@@ -25,7 +25,7 @@
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
-		<string>http://baxford.ngrok.io</string>
+		<string>https://baxford.ngrok.io</string>
 		<key>PlatformToken</key>
 		<string>1</string>
 		<key>PlatformSecret</key>

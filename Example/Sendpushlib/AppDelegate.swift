@@ -57,5 +57,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Couldn't register: \(error)")
     }
 
+    func setUsername(username: String, tags: [String: String]) {
+        if let sp = sendpush {
+            sp.registerUser(username, tags: tags)
+        }
+    }
+    func sendPushToUsername(username: String, pushMessage: String) {
+        if let sp = sendpush {
+            sp.sendPushToUsername(username, pushMessage: pushMessage)
+        }
+    }
 }
 

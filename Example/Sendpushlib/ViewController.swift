@@ -28,6 +28,10 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func registerForPush(sender: AnyObject) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.registerForPush()
+    }
 
     @IBAction func updateUsername(sender: AnyObject) {
         if let un = username.text {

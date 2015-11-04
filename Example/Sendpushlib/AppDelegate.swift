@@ -23,8 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Crashlytics.self])
         // setup the sendpush library
         let sendpush = SendPush.push.bootstrap()
-        // request push notifications
-        sendpush.setupPush()
+
         self.sendpush = sendpush
 
         return true
@@ -60,6 +59,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
         print("Couldn't register: \(error)")
+    }
+    
+    func registerForPush() {
+        // request push notifications
+        if let sp = sendpush {
+            sp.setupPush()
+        }
     }
 
     func setUsername(username: String, tags: [String: String]) {

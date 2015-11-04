@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -39,11 +44,11 @@
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
-		<string>https://baxford.ngrok.io</string>
+		<string>http://go-staging-1537546679.us-west-2.elb.amazonaws.com</string>
 		<key>PlatformSecret</key>
-		<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
+		<string>e35e2b071f58e7bc1ce2b42f2ca87d0c087fec392a0716f4cf6d93a215294e84</string>
 		<key>PlatformToken</key>
-		<string>1</string>
+		<string>2</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

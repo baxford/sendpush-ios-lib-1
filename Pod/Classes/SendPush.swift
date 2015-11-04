@@ -246,6 +246,8 @@ public class SendPush {
                 print("Error \(err)")
             }
             print("Response: \(response)")
+            
+            // TODO BA - handle connection errors or different responses etc
             let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("Body: \(strData)")
             do {

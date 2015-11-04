@@ -20,16 +20,30 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>4d9003e4c3b03cdcb7a0292c9da258d2cec41880</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
 		<string>https://baxford.ngrok.io</string>
-		<key>PlatformToken</key>
-		<string>1</string>
 		<key>PlatformSecret</key>
 		<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
+		<key>PlatformToken</key>
+		<string>1</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

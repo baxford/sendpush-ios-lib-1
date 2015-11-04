@@ -226,12 +226,20 @@ public class SendPush {
         }
     }
     
-    public func sendPushToUsername(username: String, pushMessage: String) {
+    public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
         //localhost:3000/app/send/username/terry/test
-        let urlStr = "\(self.apiUrl!)/app/send/username/\(username)/\(pushMessage)"
+        let urlStr = "\(self.apiUrl!)/app/users/\(username)/messages"
         let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         
-        var body = [String: String]()
+        var tagDict = [Dictionary<String, String>]()
+        for (tag,value) in tags {
+            tagDict.append(["tag":tag,"value":value])
+
+        }
+        let body = [
+            "content": pushMessage,
+            "tags": tagDict
+        ]
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
             if let err = error {
@@ -282,7 +290,7 @@ public class SendPush {
         print("didReceiveRemoteNotification")
     }
     
-    private func postBody(url: NSURL?, body: [String: String], method: String, completionHandler: ( (NSData?, NSURLResponse?, NSError?) -> Void)?) {
+    private func postBody(url: NSURL?, body: NSDictionary, method: String, completionHandler: ( (NSData?, NSURLResponse?, NSError?) -> Void)?) {
         var request = NSMutableURLRequest(URL: url!)
         var session = NSURLSession.sharedSession()
         

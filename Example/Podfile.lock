@@ -1,5 +1,9 @@
 PODS:
+  - Crashlytics (3.3.4)
   - CryptoSwift (0.0.14)
+  - Fabric (1.5.5):
+    - Fabric/Base (= 1.5.5)
+  - Fabric/Base (1.5.5)
   - FBSnapshotTestCase (2.0.7):
     - FBSnapshotTestCase/SwiftSupport (= 2.0.7)
   - FBSnapshotTestCase/Core (2.0.7)
@@ -13,6 +17,8 @@ PODS:
     - JSONWebToken (= 1.4.0)
 
 DEPENDENCIES:
+  - Crashlytics
+  - Fabric
   - FBSnapshotTestCase (~> 2.0.7)
   - JSONWebToken (~> 1.4.0)
   - Nimble (~> 3.0.0)
@@ -24,7 +30,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
+  Crashlytics: 41c082440d2e14da444186fff65e79c0b4b35d4c
   CryptoSwift: 5a6b725e2ad65a789f5f435dd434d38eb2c40b46
+  Fabric: 190bf1a6eb65f7500de1347d027d2e59a7e53db1
   FBSnapshotTestCase: 7e85180d0d141a0cf472352edda7e80d7eaeb547
   JSONWebToken: 75ccb5b96a37bb250fdda42f5e224c19f123b920
   Nimble: 4c353d43735b38b545cbb4cb91504588eb5de926

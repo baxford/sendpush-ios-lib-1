@@ -4,6 +4,8 @@ use_frameworks!
 target 'Sendpushlib_Example', :exclusive => true do
   pod "Sendpushlib", :path => "../"
   pod "JSONWebToken", '~> 1.4.0'
+  pod 'Fabric'
+  pod 'Crashlytics'
 end
 
 target 'Sendpushlib_Tests', :exclusive => true do

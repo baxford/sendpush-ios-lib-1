@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var pushContent: UITextField!
     
+    @IBOutlet weak var badge: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
 
     @IBAction func updateUsername(sender: AnyObject) {
         if let un = username.text {
@@ -41,11 +43,15 @@ class ViewController: UIViewController {
     }
     
     @IBAction func sendPushToUsername(sender: AnyObject) {
+        var badgeVal = "0"
+        if let bv = badge.text {
+            badgeVal = bv
+        }
         if let un = sendToUsername.text {
             if let pushMessage = pushContent.text {
                 let appDelegate = UIApplication.sharedApplication().delegate as!AppDelegate
-                let tags = ["tag":"value"]
-                appDelegate.sendPushToUsername(un, pushMessage: pushMessage)
+                let tags = ["badge":badgeVal]
+                appDelegate.sendPushToUsername(un, pushMessage: pushMessage, tags: tags)
             }
         }
     }

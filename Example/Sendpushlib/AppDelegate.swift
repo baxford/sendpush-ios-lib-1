@@ -9,6 +9,9 @@
 import UIKit
 import Sendpushlib
 
+import Fabric
+import Crashlytics
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var sendpush: SendPush?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        // start Fabric
+        Fabric.with([Crashlytics.self])
         // setup the sendpush library
         let sendpush = SendPush.push.bootstrap()
         // request push notifications
@@ -67,9 +72,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             sp.unregisterUser()
         }
     }
-    func sendPushToUsername(username: String, pushMessage: String) {
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
         if let sp = sendpush {
-            sp.sendPushToUsername(username, pushMessage: pushMessage)
+            sp.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
         }
     }
 }

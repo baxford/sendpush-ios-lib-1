@@ -8,19 +8,23 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var username: UITextField!
-    
+
     @IBOutlet weak var sendToUsername: UITextField!
-    
+
     @IBOutlet weak var pushContent: UITextField!
-    
+
     @IBOutlet weak var badge: UITextField!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        username.delegate=self
+        sendToUsername.delegate=self
+        pushContent.delegate=self
+        badge.delegate=self
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,6 +62,12 @@ class ViewController: UIViewController {
                 appDelegate.sendPushToUsername(un, pushMessage: pushMessage, tags: tags)
             }
         }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField!) -> Bool // called when 'return' key pressed. return NO to ignore.
+    {
+        textField.resignFirstResponder()
+        return true;
     }
 }
 

@@ -8,7 +8,6 @@
 
 import Foundation
 import JWT
-import CryptoSwift
 
 public class SendPush {
     

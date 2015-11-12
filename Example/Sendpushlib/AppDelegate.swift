@@ -57,8 +57,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          sp.registerDevice(deviceToken)
         }
     }
+    
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
         print("Couldn't register: \(error)")
+    }
+    
+    // If a push is received while the app is in foreground, alert the user
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]){
+        let notifiAlert = UIAlertView()
+        if let aps = userInfo["aps"] as? NSDictionary {
+            if let alert = aps["alert"] as? NSDictionary {
+                if let message = alert["message"] as? NSString {
+                    notifiAlert.message = message as String
+                }
+            } else if let alert = aps["alert"] as? NSString {
+                notifiAlert.message = alert as String
+            }
+        }
+
+        var NotificationMessage : AnyObject? =  userInfo["alert"]
+        notifiAlert.title = "Received Push"
+        
+        notifiAlert.addButtonWithTitle("OK")
+        notifiAlert.show()
     }
     
     func registerForPush() {

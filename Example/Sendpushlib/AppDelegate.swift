@@ -68,14 +68,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let aps = userInfo["aps"] as? NSDictionary {
             if let alert = aps["alert"] as? NSDictionary {
                 if let message = alert["message"] as? NSString {
-                    notifiAlert.message = message as String
+                    notifiAlert.message = "\"\(message)\"" as String
                 }
             } else if let alert = aps["alert"] as? NSString {
-                notifiAlert.message = alert as String
+                notifiAlert.message = "\"\(alert)\"" as String
             }
         }
 
-        var NotificationMessage : AnyObject? =  userInfo["alert"]
         notifiAlert.title = "Received Push"
         
         notifiAlert.addButtonWithTitle("OK")
@@ -90,18 +89,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setUsername(username: String, tags: [String: String]) {
-        if let sp = sendpush {
-            sp.registerUser(username, tags: tags)
+        if (username.isEmpty) {
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "Username Required"
+            notifiAlert.message = "Please enter a username"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
+        } else {
+            if let sp = sendpush {
+                sp.registerUser(username, tags: tags)
+                let notifiAlert = UIAlertView()
+                notifiAlert.title = "User Set"
+                notifiAlert.message = "User Set to \(username)"
+                notifiAlert.addButtonWithTitle("OK")
+                notifiAlert.show()
+            }
         }
     }
     func clearUsername() {
         if let sp = sendpush {
             sp.unregisterUser()
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "User Cleared"
+            notifiAlert.message = "User cleared"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
         }
     }
     func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
-        if let sp = sendpush {
-            sp.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+        if (username.isEmpty) {
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "Username Required"
+            notifiAlert.message = "Please enter a username"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
+        } else if (pushMessage.isEmpty) {
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "Message Required"
+            notifiAlert.message = "Please enter a Push Message"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
+        } else {
+            if let sp = sendpush {
+                sp.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+                let notifiAlert = UIAlertView()
+                notifiAlert.title = "Push Sent"
+                notifiAlert.message = "Push sent: \"\(pushMessage)\""
+                notifiAlert.addButtonWithTitle("OK")
+                notifiAlert.show()
+            }
         }
     }
 }

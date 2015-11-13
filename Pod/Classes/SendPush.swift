@@ -95,9 +95,16 @@ public class SendPush {
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
             if let err = error {
-                print("Error \(err)")
+                NSLog("Error in registerDevice \(err)")
+                return
             }
             print("Response: \(response)")
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                // TODO BA - more handling here.
+                NSLog("Error in registerDevice - HTTP status code: \(statusCode)");
+                return;
+            }
             let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("Body: \(strData)")
             do {
@@ -142,9 +149,16 @@ public class SendPush {
         
             func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
                 if let err = error {
-                    print("Error \(err)")
+                    NSLog("Error in registerUser \(err)")
+                    return
                 }
                 print("Response: \(response)")
+                let statusCode = (response as! NSHTTPURLResponse).statusCode
+                if (statusCode != 200) {
+                    // TODO BA - more handling here.
+                    NSLog("Error in registerUser - HTTP status code: \(statusCode)");
+                    return;
+                }
                 let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
                 print("Body: \(strData)")
                 do {
@@ -189,9 +203,16 @@ public class SendPush {
             
                 func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
                     if let err = error {
-                        print("Error \(err)")
+                        NSLog("Error in unregisterUser \(err)")
+                        return
                     }
                     print("Response: \(response)")
+                    let statusCode = (response as! NSHTTPURLResponse).statusCode
+                    if (statusCode != 200) {
+                        // TODO BA - more handling here.
+                        NSLog("Error in unregisterUser - HTTP status code: \(statusCode)");
+                        return;
+                    }
                     let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
                     print("Body: \(strData)")
                     do {
@@ -242,10 +263,16 @@ public class SendPush {
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
             if let err = error {
-                print("Error \(err)")
+                NSLog("Error in sendPushToUsername \(err)")
+                return
             }
             print("Response: \(response)")
-            
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                // TODO BA - more handling here.
+                NSLog("Error in sendPushToUsername - HTTP status code: \(statusCode)");
+                return
+            }
             // TODO BA - handle connection errors or different responses etc
             let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("Body: \(strData)")

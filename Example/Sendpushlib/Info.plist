@@ -20,7 +20,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>1.5</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -44,11 +44,11 @@
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
-		<string>http://go-staging-1537546679.us-west-2.elb.amazonaws.com</string>
+		<string>http://production-api-728804553.us-west-2.elb.amazonaws.com/</string>
 		<key>PlatformSecret</key>
-		<string>e35e2b071f58e7bc1ce2b42f2ca87d0c087fec392a0716f4cf6d93a215294e84</string>
-		<key>PlatformToken</key>
-		<string>2</string>
+		<string>a1693d19a4361c887caf32e80f4a20cb1a2fed08218536c8e744163e5fef220f</string>
+		<key>PlatformID</key>
+		<string>1</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

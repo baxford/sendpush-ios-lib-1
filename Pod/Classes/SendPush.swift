@@ -17,7 +17,7 @@ public class SendPush {
     var apiUrl: String?
     
     // Instance vars
-    var platformToken: String?
+    var platformID: String?
     var platformSecret: String?
     
     /*
@@ -41,10 +41,10 @@ public class SendPush {
                 print("SendPush Exception: No APIUrl in info.plist")
             }
             
-            if let platformToken = sendpushConfig?.valueForKey("PlatformToken") as? String {
-                self.platformToken = platformToken
+            if let platformID = sendpushConfig?.valueForKey("PlatformID") as? String {
+                self.platformID = platformID
             } else {
-                print("SendPush Exception: No PlatformToken in info.plist")
+                print("SendPush Exception: No PlatformID in info.plist")
             }
             if let platformSecret = sendpushConfig?.valueForKey("PlatformSecret") as? String {
                 self.platformSecret = platformSecret
@@ -83,11 +83,13 @@ public class SendPush {
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
 
+        let model = UIDevice.currentDevice().model
+        let devType = UIDevice.currentDevice().systemName
             
         let body = [
             "device_platform": "ios",
-            "device_type": "TODO",
-            "model":"TODO",
+            "device_type": devType,
+            "model":model,
             "token": deviceTokenString,
             "timezone":"+1000",
             "language":"en"
@@ -349,7 +351,7 @@ public class SendPush {
     func signRequest(body: NSData) -> String {
         
         let secret = platformSecret ?? ""
-        let sub = platformToken ?? ""
+        let sub = platformID ?? ""
 
         let sha256 = body.sha256()
         let hash = sha256!.toHexString()

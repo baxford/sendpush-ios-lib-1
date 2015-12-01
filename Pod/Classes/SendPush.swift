@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import JWT
+
 
 public class SendPush {
     
@@ -20,12 +20,16 @@ public class SendPush {
     var platformID: String?
     var platformSecret: String?
     
+    var api: SendPushAPI?
+    
+    var heartbeat: Heartbeat?
+    
     /*
-    ** bootstrap
+    ** init
     ** This function initializes the SendPush library
     ** It hooks into app lifecycle, validates the info.plist settings and registers for push
     */
-    public func bootstrap() -> SendPush {
+    init() {
         
         var myDict: NSDictionary?
         if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
@@ -54,10 +58,30 @@ public class SendPush {
         } else {
             debugPrint("Unable to get SendPush config from info.plist")
         }
+        self.api = SendPushAPI(platformID: self.platformID, platformSecret: self.platformSecret, apiUrl: self.apiUrl)
+        self.heartbeat = Heartbeat(api: self.api!)
+        // listen to some events
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameActive:",
+            name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameInactive:",
+            name: UIApplicationWillResignActiveNotification, object: nil)
+
         
         print("Init sendpush")
         // Return self for chainable interface
+
+    }
+    
+    public func bootstrap() -> SendPush {
         return self
+    }
+    
+    @objc func applicationBecameActive(notification: NSNotification) {
+        startSession()
+    }
+    
+    @objc func applicationBecameInactive(notification: NSNotification) {
+        endSession()
     }
     
     public func setupPush() {
@@ -73,9 +97,106 @@ public class SendPush {
         }
     }
     
+    private func startSession() {
+
+        let body = [
+            "device_id": "something",
+            
+        ]
+        
+        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
+            if let err = error {
+                NSLog("Error in startSession \(err)")
+                return
+            }
+            print("Response: \(response)")
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                // TODO BA - more handling here.
+                NSLog("Error in startSession - HTTP status code: \(statusCode)");
+                return
+            }
+            // TODO BA - handle connection errors or different responses etc
+            let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("Body: \(strData)")
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+                
+                if let parseJSON = json {
+                    // Okay, the parsedJSON is here, let's get the values out of it
+                    if let jsonData = parseJSON["data"] {
+                        if let status = jsonData as? String {
+                            print("Success: \(status)")
+                        }
+                        
+                        self.heartbeat!.start()
+                    }
+                } else {
+                    // the json object was nil, something went worng. Maybe the server isn't running?
+                    let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                    print("Error could not parse JSON: \(jsonStr)")
+                }
+            } catch {
+                print("SendPush Exception: Serializing json \(error)")
+                return
+            }
+            
+        }
+        
+        api!.postBody("/app/session", body: body, method: "POST", completionHandler: postHandler)
+        
+    }
+    
+    private func endSession() {
+        self.heartbeat!.stop()
+
+        let body = [
+            "device_id": "something",
+            
+        ]
+        
+        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
+            if let err = error {
+                NSLog("Error in startSession \(err)")
+                return
+            }
+            print("Response: \(response)")
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                // TODO BA - more handling here.
+                NSLog("Error in startSession - HTTP status code: \(statusCode)");
+                return
+            }
+            // TODO BA - handle connection errors or different responses etc
+            let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print("Body: \(strData)")
+            do {
+                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+                
+                if let parseJSON = json {
+                    // Okay, the parsedJSON is here, let's get the values out of it
+                    if let jsonData = parseJSON["data"] {
+                        if let status = jsonData as? String {
+                            print("Success: \(status)")
+                        }
+                    }
+                } else {
+                    // the json object was nil, something went worng. Maybe the server isn't running?
+                    let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                    print("Error could not parse JSON: \(jsonStr)")
+                }
+            } catch {
+                print("SendPush Exception: Serializing json \(error)")
+                return
+            }
+            
+        }
+        
+        api!.postBody("/app/session", body: body, method: "PUT", completionHandler: postHandler)
+        
+    }
+    
     public func registerDevice(deviceToken: NSData!) {
-        let urlStr = "\(self.apiUrl!)/app/devices"
-        let url = NSURL(string: urlStr)
         
         let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
         
@@ -135,7 +256,7 @@ public class SendPush {
             }
         }
         
-        postBody(url!, body: body, method: "POST", completionHandler: postHandler)
+        api!.postBody("/app/devices", body: body, method: "POST", completionHandler: postHandler)
         
     }
     
@@ -144,8 +265,7 @@ public class SendPush {
         let prefs = NSUserDefaults.standardUserDefaults()
 
         if let token = prefs.valueForKey("sendPushDeviceToken") {
-            let urlStr = "\(self.apiUrl!)/app/users/\(username)/\(token)"
-            let url = NSURL(string: urlStr)
+            let urlStr = "/app/users/\(username)/\(token)"
             
             var body = [String: String]()
         
@@ -188,7 +308,7 @@ public class SendPush {
             
             }
             
-            postBody(url!, body: body, method: "PUT", completionHandler: postHandler)
+            api!.postBody(urlStr, body: body, method: "PUT", completionHandler: postHandler)
         }
     }
     
@@ -198,7 +318,7 @@ public class SendPush {
         if let username = prefs.valueForKey("sendPushUsername") {
             if let token = prefs.valueForKey("sendPushDeviceToken") {
         
-                let urlStr = "\(self.apiUrl!)/app/users/\(username)/\(token)"
+                let urlStr = "/app/users/\(username)/\(token)"
                 let url = NSURL(string: urlStr)
                 
                 var body = [String: String]()
@@ -242,7 +362,7 @@ public class SendPush {
                 
                 }
             
-                postBody(url!, body: body, method: "DELETE", completionHandler: postHandler)
+                api!.postBody(urlStr, body: body, method: "DELETE", completionHandler: postHandler)
         
             }
         }
@@ -250,8 +370,7 @@ public class SendPush {
     
     public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
         //localhost:3000/app/send/username/terry/test
-        let urlStr = "\(self.apiUrl!)/app/users/\(username)/messages"
-        let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+        let urlStr = "/app/users/\(username)/messages"
         
         var tagDict = [Dictionary<String, String>]()
         for (tag,value) in tags {
@@ -300,9 +419,10 @@ public class SendPush {
                     
         }
                 
-        postBody(url!, body: body, method: "POST", completionHandler: postHandler)
+        api!.postBody(urlStr, body: body, method: "POST", completionHandler: postHandler)
                 
     }
+    
     
     //MARK: NotificationDelegate Methods
     
@@ -320,46 +440,5 @@ public class SendPush {
         print("didReceiveRemoteNotification")
     }
     
-    private func postBody(url: NSURL?, body: NSDictionary, method: String, completionHandler: ( (NSData?, NSURLResponse?, NSError?) -> Void)?) {
-        var request = NSMutableURLRequest(URL: url!)
-        var session = NSURLSession.sharedSession()
-        
-        do {
-            let json =  try NSJSONSerialization.dataWithJSONObject(body, options: [])
-            let authToken = signRequest(json)
-            let dataString = NSString(data: json, encoding: NSUTF8StringEncoding)!
-            request.HTTPBody = json
-            request.HTTPMethod = method
-            request.addValue("bearer \(authToken)", forHTTPHeaderField: "Authorization")
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            
-            let task = session.dataTaskWithRequest(request, completionHandler: completionHandler!)
-        
-            task.resume()
-        } catch {
-            print("SendPush Exception: Serializing json \(error)")
-            return
-        }
 
-    }
-    
-    /*
-        This function creates a JWT to authenticate the request.
-        It also calculates a sha256 of the request body and includes it as a claim in the JWT called 'hash'
-    */
-    func signRequest(body: NSData) -> String {
-        
-        let secret = platformSecret ?? ""
-        let sub = platformID ?? ""
-
-        let sha256 = body.sha256()
-        let hash = sha256!.toHexString()
-        return JWT.encode(.HS256(secret)) { builder in
-            builder.issuer = "co.sendpush"
-            builder.expiration = NSDate(timeIntervalSinceNow: 60)
-            builder["sub"] = sub
-            builder["hash"] = hash
-        }
-    }
 }

@@ -44,9 +44,9 @@
 	<key>SendPush</key>
 	<dict>
 		<key>APIUrl</key>
-		<string>http://production-api-728804553.us-west-2.elb.amazonaws.com/</string>
+		<string>http://baxford.ngrok.io</string>
 		<key>PlatformSecret</key>
-		<string>a1693d19a4361c887caf32e80f4a20cb1a2fed08218536c8e744163e5fef220f</string>
+		<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
 		<key>PlatformID</key>
 		<string>1</string>
 	</dict>

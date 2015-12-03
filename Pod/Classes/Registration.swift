@@ -29,14 +29,15 @@ public class Registration {
         
         let model = UIDevice.currentDevice().model
         let devType = UIDevice.currentDevice().systemName
-        
+        let tz = NSTimeZone.localTimeZone().abbreviation as String!
+        let langId = NSLocale.preferredLanguages().first
         let body = [
             "device_platform": "ios",
             "device_type": devType,
             "model":model,
             "token": deviceToken,
-            "timezone":"+1000",
-            "language":"en"
+            "timezone": tz,
+            "language": langId
         ]
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {

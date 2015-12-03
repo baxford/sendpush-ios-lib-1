@@ -9,7 +9,8 @@
 import Foundation
 public class SessionEvents {
     
-    
+    // intervals at which we post heartbeats - up to max of every 5 mins
+    let hearbeatIntervals = [1,5, 15, 30, 45, 60, 120, 180, 240, 300]
     var api: SendPushAPI
     var deviceUniqueID: String
     var heartbeatCount = 0
@@ -75,16 +76,19 @@ public class SessionEvents {
     func startHeartbeat() {
         self.active = true
         self.heartbeatCount = 0
-        let interval = Double(heartbeatCount) * 1.0
+        let interval = Double(hearbeatIntervals[heartbeatCount]) * 1.0
         delay(interval, closure: { [unowned self] () -> () in
             self.heartbeatCallback()
         })
     }
     
     func heartbeatCallback() {
-        self.heartbeatCount++
-        let interval = Double(heartbeatCount) * 1.0
-        print("HEARTBEAT \(self.heartbeatCount), next at \(interval)")
+        if (heartbeatCount < hearbeatIntervals.count - 1) {
+            heartbeatCount += 1
+        }
+        let backoff = hearbeatIntervals[heartbeatCount]
+        let interval = Double(backoff) * 1.0
+        NSLog("HEARTBEAT \(self.heartbeatCount), next at \(interval)")
         if (self.active) {
             beat()
             delay(interval, closure: { [unowned self] () -> () in

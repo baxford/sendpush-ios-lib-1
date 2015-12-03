@@ -7,15 +7,6 @@
 //
 
 import Foundation
-//
-//  SendPush.swift
-//  SendPush.co
-//
-//  Created by SendPush.co on 5/3/15.
-//  Copyright (c) 2015 SendPush.co. All rights reserved.
-//
-
-import Foundation
 
 
 public class Registration {
@@ -34,13 +25,7 @@ public class Registration {
         self.api = api
     }
     
-    func registerDevice(deviceToken: NSData!) {
-        
-        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
-        
-        let deviceTokenString: String = ( deviceToken.description as NSString )
-            .stringByTrimmingCharactersInSet( characterSet )
-            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+    func registerDevice(deviceToken: String, onSuccess: () -> Void, onFailure: (statusCode: Int) -> Void) {
         
         let model = UIDevice.currentDevice().model
         let devType = UIDevice.currentDevice().systemName
@@ -49,7 +34,7 @@ public class Registration {
             "device_platform": "ios",
             "device_type": devType,
             "model":model,
-            "token": deviceTokenString,
+            "token": deviceToken,
             "timezone":"+1000",
             "language":"en"
         ]
@@ -59,36 +44,11 @@ public class Registration {
                 NSLog("Error in registerDevice \(err)")
                 return
             }
-            print("Response: \(response)")
             let statusCode = (response as! NSHTTPURLResponse).statusCode
             if (statusCode != 200) {
-                // TODO BA - more handling here.
-                NSLog("Error in registerDevice - HTTP status code: \(statusCode)");
-                return;
-            }
-            let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("Body: \(strData)")
-            do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-                
-                if let parseJSON = json {
-                    // Okay, the parsedJSON is here, let's get the values out of it
-                    if let jsonData = parseJSON["data"] {
-                        let token = jsonData["token"] as? NSString
-                        let prefs = NSUserDefaults.standardUserDefaults()
-                        
-                        prefs.setValue(token, forKey: "sendPushDeviceToken")
-                        
-                        NSLog("Success: \(token!)")
-                    }
-                } else {
-                    // the json object was nil, something went worng. Maybe the server isn't running?
-                    let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                    NSLog("Error could not parse JSON: \(jsonStr)")
-                }
-            } catch {
-                NSLog("SendPush Exception: Serializing json \(error)")
-                return
+                onFailure(statusCode: statusCode)
+            } else {
+                onSuccess()
             }
         }
         
@@ -97,111 +57,58 @@ public class Registration {
     }
     
     
-    func registerUser(username: String, tags: [String: String]?) {
+    func registerUser(username: String, deviceToken: String, tags: [String: String]?, onSuccess: () -> Void, onFailure: (statusCode: Int) -> Void) {
+        
+        let urlStr = "/app/users/\(username)/\(deviceToken)"
+        
+        var body = [String: String]()
+        
+        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
+            if let err = error {
+                NSLog("Error in registerUser \(err)")
+                return
+            }
+
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                // TODO BA - more handling here.
+                onFailure(statusCode: statusCode)
+            } else {
+                onSuccess()
+            }
+            
+        }
+            
+        api.postBody(urlStr, body: body, method: "PUT", completionHandler: postHandler)
+        
+    }
+    
+    func unregisterUser(onSuccess: () -> Void, onFailure: (statusCode: Int) -> Void) {
         let prefs = NSUserDefaults.standardUserDefaults()
         
-        if let token = prefs.valueForKey("sendPushDeviceToken") {
+        if let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
+                
             let urlStr = "/app/users/\(username)/\(token)"
+            let url = NSURL(string: urlStr)
             
             var body = [String: String]()
             
             func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
                 if let err = error {
-                    NSLog("Error in registerUser \(err)")
+                    NSLog("Error in unregisterUser \(err)")
                     return
                 }
                 print("Response: \(response)")
                 let statusCode = (response as! NSHTTPURLResponse).statusCode
                 if (statusCode != 200) {
-                    // TODO BA - more handling here.
-                    NSLog("Error in registerUser - HTTP status code: \(statusCode)");
-                    return;
+                    onFailure(statusCode: statusCode)
+                } else {
+                    onSuccess()
                 }
-                let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                print("Body: \(strData)")
-                do {
-                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-                    
-                    if let parseJSON = json {
-                        // Okay, the parsedJSON is here, let's get the values out of it
-                        if let jsonData = parseJSON["data"] {
-                            let un = jsonData["username"] as? NSString
-                            let prefs = NSUserDefaults.standardUserDefaults()
-                            
-                            prefs.setValue(un!, forKey: "sendPushUsername")
-                            
-                            print("Success: \(un!)")
-                        }
-                    } else {
-                        // the json object was nil, something went worng. Maybe the server isn't running?
-                        let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                        print("Error could not parse JSON: \(jsonStr)")
-                    }
-                } catch {
-                    print("SendPush Exception: Serializing json \(error)")
-                    return
-                }
-                
             }
-            
-            api.postBody(urlStr, body: body, method: "PUT", completionHandler: postHandler)
+            api.postBody(urlStr, body: body, method: "DELETE", completionHandler: postHandler)
         }
-    }
-    
-    func unregisterUser() {
-        let prefs = NSUserDefaults.standardUserDefaults()
         
-        if let username = prefs.valueForKey("sendPushUsername") {
-            if let token = prefs.valueForKey("sendPushDeviceToken") {
-                
-                let urlStr = "/app/users/\(username)/\(token)"
-                let url = NSURL(string: urlStr)
-                
-                var body = [String: String]()
-                
-                func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-                    if let err = error {
-                        NSLog("Error in unregisterUser \(err)")
-                        return
-                    }
-                    print("Response: \(response)")
-                    let statusCode = (response as! NSHTTPURLResponse).statusCode
-                    if (statusCode != 200) {
-                        // TODO BA - more handling here.
-                        NSLog("Error in unregisterUser - HTTP status code: \(statusCode)");
-                        return;
-                    }
-                    let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                    print("Body: \(strData)")
-                    do {
-                        let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-                        
-                        if let parseJSON = json {
-                            // Okay, the parsedJSON is here, let's get the values out of it
-                            if let jsonData = parseJSON["data"] {
-                                let un = jsonData["username"] as? NSString
-                                let prefs = NSUserDefaults.standardUserDefaults()
-                                
-                                prefs.setValue(un!, forKey: "sendPushUsername")
-                                
-                                print("Success: \(un!)")
-                            }
-                        } else {
-                            // the json object was nil, something went worng. Maybe the server isn't running?
-                            let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                            print("Error could not parse JSON: \(jsonStr)")
-                        }
-                    } catch {
-                        print("SendPush Exception: Serializing json \(error)")
-                        return
-                    }
-                    
-                }
-                
-                api.postBody(urlStr, body: body, method: "DELETE", completionHandler: postHandler)
-                
-            }
-        }
     }
     
 }

@@ -25,11 +25,12 @@ public class SendPush {
     var registration: Registration
     var pushSender: PushSender
     
+
     
     /*
     ** init
     ** This function initializes the SendPush library
-    ** It hooks into app lifecycle, validates the info.plist settings and registers for push
+    ** It hooks into app lifecycle, validates the info.plist settings
     */
     private init() {
         
@@ -97,16 +98,64 @@ public class SendPush {
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
     }
     
+    /*
+    * Called by the owning app when a user has accepted push notifications.
+    */
     public func registerDevice(deviceToken: NSData!) {
-        self.registration.registerDevice(deviceToken)
+        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
+        
+        let deviceTokenString: String = ( deviceToken.description as NSString )
+            .stringByTrimmingCharactersInSet( characterSet )
+            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+
+        func successHandler() {
+            let prefs = NSUserDefaults.standardUserDefaults()
+            prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
+
+            // now if the user isn't registered, we need to do it now
+            if !prefs.boolForKey(SendPushConstants.USER_REGISTERED), let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let userTags = prefs.dictionaryForKey(SendPushConstants.USER_TAGS) as? Dictionary<String, String> {
+                registerUser(username, tags: userTags)
+                
+            }
+        }
+        func failureHandler(statusCode: Int) {
+            
+        }
+        self.registration.registerDevice(deviceTokenString, onSuccess: successHandler,  onFailure: failureHandler)
     }
     
+    
+    /*
+    * This is called as soon as the username is available (eg at Login)
+    */
     public func registerUser(username: String, tags: [String: String]?) {
-        self.registration.registerUser(username, tags: tags)
+        let prefs = NSUserDefaults.standardUserDefaults()
+        prefs.setValue(username, forKey: SendPushConstants.USERNAME)
+        prefs.setValue(tags, forKey: SendPushConstants.USER_TAGS)
+        if let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+            // we can only register this user once we have their device token, so let's check
+            func successHandler() {
+                prefs.setValue(true, forKey: SendPushConstants.USER_REGISTERED)
+            }
+            func failureHandler(statusCode: Int) {
+                prefs.setValue(false, forKey: SendPushConstants.USER_REGISTERED)
+            }
+            self.registration.registerUser(username, deviceToken: token, tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
+        }
+
     }
     
     public func unregisterUser() {
-        self.registration.unregisterUser()
+        let prefs = NSUserDefaults.standardUserDefaults()
+        
+        func successHandler() {
+            prefs.removeObjectForKey(SendPushConstants.USERNAME)
+            prefs.removeObjectForKey(SendPushConstants.USER_REGISTERED)
+        }
+        func failureHandler(statusCode: Int) {
+            
+        }
+        self.registration.unregisterUser(successHandler, onFailure: failureHandler)
     }
     
     public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {

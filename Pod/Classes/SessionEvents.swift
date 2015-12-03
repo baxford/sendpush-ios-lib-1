@@ -11,8 +11,9 @@ public class SessionEvents {
     
     
     var api: SendPushAPI
-    var heartbeat: Heartbeat
     var deviceUniqueID: String
+    var heartbeatCount = 0
+    var active = false;
     /*
     ** init
     ** This function initializes the SendPush library
@@ -21,113 +22,121 @@ public class SessionEvents {
     init(api: SendPushAPI) {
         
         self.api = api
-        self.heartbeat = Heartbeat(api: api)
+
         let prefs = NSUserDefaults.standardUserDefaults()
         
-        if let deviceId = prefs.stringForKey("sendPushDeviceUuniqueID") {
+        if let deviceId = prefs.stringForKey(SendPushConstants.DEVICE_UNIQUE_ID) {
             self.deviceUniqueID = deviceId
         } else {
             self.deviceUniqueID = "something"
-            prefs.setValue(self.deviceUniqueID, forKey: "sendPushDeviceUuniqueID")
+            prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
         }
     }
     
+    func buildSessionBody() -> NSDictionary {
+        let prefs = NSUserDefaults.standardUserDefaults()
+        var loggedIn = false, optInPush = false;
+        if let _ = prefs.stringForKey("sendPushUsername") {
+            loggedIn = true
+        }
+        if let _ = prefs.stringForKey("sendPushDeviceToken") {
+            optInPush = true
+        }
+        
+        let body = [
+            "device_id": self.deviceUniqueID,
+            "opt_in_push": optInPush,
+            "logged_in": loggedIn
+        ]
+        return body
+    }
     
     func startSession() {
         
-        let body = [
-            "device_id": "something",
-            
-        ]
+        let completionHandler = handleSession({
+            NSLog("Session done, starting heartbeat")
+            self.startHeartbeat()
+        })
         
-        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-            if let err = error {
-                NSLog("Error in startSession \(err)")
-                return
-            }
-            print("Response: \(response)")
-            let statusCode = (response as! NSHTTPURLResponse).statusCode
-            if (statusCode != 200) {
-                // TODO BA - more handling here.
-                NSLog("Error in startSession - HTTP status code: \(statusCode)");
-                return
-            }
-            // TODO BA - handle connection errors or different responses etc
-            let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("Body: \(strData)")
-            do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-                
-                if let parseJSON = json {
-                    // Okay, the parsedJSON is here, let's get the values out of it
-                    if let jsonData = parseJSON["data"] {
-                        if let status = jsonData as? String {
-                            print("Success: \(status)")
-                        }
-                        
-                        self.heartbeat.start()
-                    }
-                } else {
-                    // the json object was nil, something went worng. Maybe the server isn't running?
-                    let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                    print("Error could not parse JSON: \(jsonStr)")
-                }
-            } catch {
-                print("SendPush Exception: Serializing json \(error)")
-                return
-            }
-            
-        }
-        
-        api.postBody("/app/session", body: body, method: "POST", completionHandler: postHandler)
+        api.postBody("/app/session", body: buildSessionBody(), method: "POST", completionHandler: completionHandler)
         
     }
     
     func endSession() {
-        self.heartbeat.stop()
-        
-        let body = [
-            "device_id": "something",
-            
-        ]
-        
-        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
+        let completionHandler = handleSession({
+            NSLog("Session done, starting heartbeat")
+            self.stopHeartbeat()
+        })
+        api.postBody("/app/session", body: buildSessionBody(), method: "PUT", completionHandler: completionHandler)
+    }
+    
+    // MARK: heartbeat
+    
+    func startHeartbeat() {
+        self.active = true
+        self.heartbeatCount = 0
+        let interval = Double(heartbeatCount) * 1.0
+        delay(interval, closure: { [unowned self] () -> () in
+            self.heartbeatCallback()
+        })
+    }
+    
+    func heartbeatCallback() {
+        self.heartbeatCount++
+        let interval = Double(heartbeatCount) * 1.0
+        print("HEARTBEAT \(self.heartbeatCount), next at \(interval)")
+        if (self.active) {
+            beat()
+            delay(interval, closure: { [unowned self] () -> () in
+                self.heartbeatCallback()
+            })
+        }
+    }
+    
+    
+    func delay(delay:Double, closure:()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), closure
+        )
+    }
+    
+    
+    func stopHeartbeat() {
+        self.active = false
+    }
+    
+    private func beat() {
+        let urlStr = "/app/session"
+        let ch = handleSession({
+            NSLog("Session done")
+        })
+        api.postBody(urlStr, body: buildSessionBody(), method: "PUT", completionHandler: ch)
+    }
+
+    /*
+    * This function returns a closure which is a completion handler, that executes the onSuccess function if successful
+    */
+    func handleSession(onSuccess: () -> Void) -> ((data: NSData?, response: NSURLResponse?, error: NSError?) -> Void) {
+        func sessionResponseHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
             if let err = error {
-                NSLog("Error in startSession \(err)")
+                NSLog("Error in session request \(err)")
                 return
             }
-            print("Response: \(response)")
             let statusCode = (response as! NSHTTPURLResponse).statusCode
             if (statusCode != 200) {
                 // TODO BA - more handling here.
-                NSLog("Error in startSession - HTTP status code: \(statusCode)");
+                NSLog("Error in session request - HTTP status code: \(statusCode)");
                 return
             }
-            // TODO BA - handle connection errors or different responses etc
-            let strData = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("Body: \(strData)")
-            do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-                
-                if let parseJSON = json {
-                    // Okay, the parsedJSON is here, let's get the values out of it
-                    if let jsonData = parseJSON["data"] {
-                        if let status = jsonData as? String {
-                            print("Success: \(status)")
-                        }
-                    }
-                } else {
-                    // the json object was nil, something went worng. Maybe the server isn't running?
-                    let jsonStr = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                    print("Error could not parse JSON: \(jsonStr)")
-                }
-            } catch {
-                print("SendPush Exception: Serializing json \(error)")
-                return
-            }
-            
+
+            onSuccess()
+
         }
-        
-        api.postBody("/app/session", body: body, method: "PUT", completionHandler: postHandler)
+        return sessionResponseHandler
     }
+    
 }

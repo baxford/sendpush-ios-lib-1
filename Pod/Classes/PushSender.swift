@@ -1,82 +1,55 @@
 //
-//  Heartbeat.swift
-//  Pods
+//  SendPush.swift
+//  SendPush.co
 //
-//  Created by Bob Axford on 26/11/2015.
-//
+//  Created by SendPush.co on 5/3/15.
+//  Copyright (c) 2015 SendPush.co. All rights reserved.
 //
 
 import Foundation
 
-public class Heartbeat: NSObject {
 
-    var api: SendPushAPI
-    var timer = NSTimer()
-    var count = 1
+public class PushSender {
     
+
+    
+    var api: SendPushAPI
+
+    
+    /*
+    ** init
+    ** This function initializes the SendPush library
+    ** It hooks into app lifecycle, validates the info.plist settings and registers for push
+    */
     init(api: SendPushAPI) {
         self.api = api
     }
     
-    func start() {
-        let interval = Double(count) * 1.0
-        delay(interval, closure: { [weak self] () -> () in
-            
-            if let strongSelf = self {
-                strongSelf.heartbeatCallback()
-            }
-        })
-
-    }
-    func heartbeatCallback() {
-        self.count++
-        let interval = Double(count) * 1.0
-        print("HEARTBEAT \(self.count), next at \(interval)")
-        beat()
-        delay(interval, closure: { [unowned self] () -> () in
-                self.heartbeatCallback()
-        })
-    }
-
     
-    func delay(delay:Double, closure:()->()) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(delay * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), closure)
-    }
-
-    
-    func stop() {
-        self.timer.invalidate()
-    }
-    
-    
-    deinit {
-        self.timer.invalidate()
-    }
-    
-    private func beat() {
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
+        //localhost:3000/app/send/username/terry/test
+        let urlStr = "/app/users/\(username)/messages"
         
-        let urlStr = "/app/session"
-
-        let body = [
-            "device_id": "something",
+        var tagDict = [Dictionary<String, String>]()
+        for (tag,value) in tags {
+            tagDict.append(["tag":tag,"value":value])
             
+        }
+        let body = [
+            "content": pushMessage,
+            "tags": tagDict
         ]
         
         func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
             if let err = error {
-                NSLog("Error in startSession \(err)")
+                NSLog("Error in sendPushToUsername \(err)")
                 return
             }
             print("Response: \(response)")
             let statusCode = (response as! NSHTTPURLResponse).statusCode
             if (statusCode != 200) {
                 // TODO BA - more handling here.
-                NSLog("Error in session heartbeat - HTTP status code: \(statusCode)");
+                NSLog("Error in sendPushToUsername - HTTP status code: \(statusCode)");
                 return
             }
             // TODO BA - handle connection errors or different responses etc
@@ -89,7 +62,7 @@ public class Heartbeat: NSObject {
                     // Okay, the parsedJSON is here, let's get the values out of it
                     if let jsonData = parseJSON["data"] {
                         if let status = jsonData as? String {
-                            NSLog("heartbeat Success: \(status)")
+                            print("Success: \(status)")
                         }
                     }
                 } else {
@@ -104,9 +77,11 @@ public class Heartbeat: NSObject {
             
         }
         
-        api.postBody(urlStr, body: body, method: "PUT", completionHandler: postHandler)
+        api.postBody(urlStr, body: body, method: "POST", completionHandler: postHandler)
         
     }
-
+    
+    
+    
     
 }

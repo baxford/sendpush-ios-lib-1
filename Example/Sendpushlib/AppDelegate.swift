@@ -16,16 +16,17 @@ import Crashlytics
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var sendpush: SendPush?
+    var sendpush: SendPush
 
+    override init() {
+        // setup the sendpush library
+        self.sendpush = SendPush.sharedInstance
+        super.init()
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // start Fabric
         Fabric.with([Crashlytics.self])
-        // setup the sendpush library
-        let sendpush = SendPush.push.bootstrap()
-
-        self.sendpush = sendpush
-
         return true
     }
 
@@ -53,12 +54,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // implemented in your application delegate
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        if let sp = sendpush {
-         sp.registerDevice(deviceToken)
-        }
+        // Now that the user has registered for push, we need to register it with Sendpush
+        sendpush.registerDevice(deviceToken)
     }
     
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         print("Couldn't register: \(error)")
     }
     
@@ -81,13 +81,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notifiAlert.show()
     }
     
+    
+    /*
+    * Call this when we want to ask our user to accept push notifications (at the right time)
+    */
     func registerForPush() {
         // request push notifications
-        if let sp = sendpush {
-            sp.setupPush()
-        }
+        sendpush.requestPush()
     }
 
+    /*
+    * This simulates a user logging in
+    */
     func setUsername(username: String, tags: [String: String]) {
         if (username.isEmpty) {
             let notifiAlert = UIAlertView()
@@ -96,26 +101,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            if let sp = sendpush {
-                sp.registerUser(username, tags: tags)
-                let notifiAlert = UIAlertView()
-                notifiAlert.title = "User Set"
-                notifiAlert.message = "User Set to \(username)"
-                notifiAlert.addButtonWithTitle("OK")
-                notifiAlert.show()
-            }
-        }
-    }
-    func clearUsername() {
-        if let sp = sendpush {
-            sp.unregisterUser()
+            sendpush.registerUser(username, tags: tags)
             let notifiAlert = UIAlertView()
-            notifiAlert.title = "User Cleared"
-            notifiAlert.message = "User cleared"
+            notifiAlert.title = "User Set"
+            notifiAlert.message = "User Set to \(username)"
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         }
     }
+    
+    /*
+    * This simulates a user logging out
+    */
+    func clearUsername() {
+        sendpush.unregisterUser()
+        let notifiAlert = UIAlertView()
+        notifiAlert.title = "User Cleared"
+        notifiAlert.message = "User cleared"
+        notifiAlert.addButtonWithTitle("OK")
+        notifiAlert.show()
+    }
+    
+    /*
+    * Simple function to send a push to another username
+    */
     func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
         if (username.isEmpty) {
             let notifiAlert = UIAlertView()
@@ -130,14 +139,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            if let sp = sendpush {
-                sp.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
-                let notifiAlert = UIAlertView()
-                notifiAlert.title = "Push Sent"
-                notifiAlert.message = "Push sent: \"\(pushMessage)\""
-                notifiAlert.addButtonWithTitle("OK")
-                notifiAlert.show()
-            }
+            sendpush.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "Push Sent"
+            notifiAlert.message = "Push sent: \"\(pushMessage)\""
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
         }
     }
 }

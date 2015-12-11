@@ -13,6 +13,7 @@ target 'Sendpushlib_Tests', :exclusive => true do
 
   pod 'Quick', '~> 0.8.0'
   pod 'Nimble', '~> 3.0.0'
+  pod 'Mockingjay'
   pod 'FBSnapshotTestCase', '~> 2.0.7'
 
 end

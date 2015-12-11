@@ -7,11 +7,11 @@
 //
 
 import Foundation
-public class SessionEvents {
+public class SessionAPI {
     
     // intervals at which we post heartbeats - up to max of every 5 mins
-    let hearbeatIntervals = [1,5, 15, 30, 45, 60, 120, 180, 240, 300]
-    var api: SendPushAPI
+    let hearbeatIntervals: [Int]
+    var restHandler: SendPushRESTHandler
     var deviceUniqueID: String
     var heartbeatCount = 0
     var active = false;
@@ -20,10 +20,11 @@ public class SessionEvents {
     ** This function initializes the SendPush library
     ** It hooks into app lifecycle, validates the info.plist settings and registers for push
     */
-    init(api: SendPushAPI) {
+    init(restHandler: SendPushRESTHandler, intervals: [Int] = [1,5, 15, 30, 45, 60, 120, 180, 240, 300]) {
         
-        self.api = api
-
+        self.restHandler = restHandler
+        self.hearbeatIntervals = intervals
+        
         let prefs = NSUserDefaults.standardUserDefaults()
         
         if let deviceId = prefs.stringForKey(SendPushConstants.DEVICE_UNIQUE_ID) {
@@ -32,6 +33,21 @@ public class SessionEvents {
             self.deviceUniqueID = "something"
             prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
         }
+        // listen to some events for session start/end
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameActive:",
+            name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameInactive:",
+            name: UIApplicationWillResignActiveNotification, object: nil)
+        
+        
+    }
+    
+    @objc func applicationBecameActive(notification: NSNotification) {
+        self.startSession()
+    }
+    
+    @objc func applicationBecameInactive(notification: NSNotification) {
+        self.endSession()
     }
     
     func buildSessionBody() -> NSDictionary {
@@ -59,7 +75,7 @@ public class SessionEvents {
             self.startHeartbeat()
         })
         
-        api.postBody("/app/session", body: buildSessionBody(), method: "POST", completionHandler: completionHandler)
+        restHandler.postBody("/app/session", body: buildSessionBody(), method: "POST", completionHandler: completionHandler)
         
     }
     
@@ -68,7 +84,7 @@ public class SessionEvents {
             NSLog("Session done, starting heartbeat")
             self.stopHeartbeat()
         })
-        api.postBody("/app/session", body: buildSessionBody(), method: "PUT", completionHandler: completionHandler)
+        restHandler.postBody("/app/session", body: buildSessionBody(), method: "PUT", completionHandler: completionHandler)
     }
     
     // MARK: heartbeat
@@ -118,7 +134,7 @@ public class SessionEvents {
         let ch = handleSession({
             NSLog("Session done")
         })
-        api.postBody(urlStr, body: buildSessionBody(), method: "PUT", completionHandler: ch)
+        restHandler.postBody(urlStr, body: buildSessionBody(), method: "PUT", completionHandler: ch)
     }
 
     /*

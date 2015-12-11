@@ -46,10 +46,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "Sendpushlib_Tests.xctest"
-               BlueprintName = "Sendpushlib_Tests"
-               ReferencedContainer = "container:Sendpushlib.xcodeproj">
+               BlueprintIdentifier = "C498C0331C1938CC005AB75B"
+               BuildableName = "SendpushlibTests.xctest"
+               BlueprintName = "SendpushlibTests"
+               ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

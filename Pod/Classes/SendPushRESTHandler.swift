@@ -9,22 +9,22 @@
 import Foundation
 import JWT
 
-public class SendPushAPI {
+public class SendPushRESTHandler {
 
     
     // Instance vars
-    var platformID: String?
-    var platformSecret: String?
-    var apiUrl: String?
+    let platformID: String
+    let platformSecret: String
+    let apiUrl: String
    
-    init(platformID: String?, platformSecret: String?, apiUrl: String?) {
+    init(platformID: String, platformSecret: String, apiUrl: String) {
         self.platformID = platformID
         self.platformSecret = platformSecret
         self.apiUrl = apiUrl
     }
     
     func postBody(url: String, body: NSDictionary, method: String, completionHandler: ( (NSData?, NSURLResponse?, NSError?) -> Void)?) {
-        let urlStr = "\(self.apiUrl!)\(url)"
+        let urlStr = "\(self.apiUrl)\(url)"
 
         let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         let request = NSMutableURLRequest(URL: url!)

@@ -9,6 +9,7 @@
 /**
 * This class also implements SendPushDelegate as the main SendPush singleton delegates all calls to this class
 */
+import UIKit
 class SendPushService: SendPushDelegate {
 
     let config: SendPushConfig
@@ -26,7 +27,7 @@ class SendPushService: SendPushDelegate {
     convenience init(uiApplication: UIApplication) {
         let config = SendPushConfig()
         // setup our dependencies
-        let restHandler = SendPushRESTHandler(platformID: config.platformID, platformSecret: config.platformSecret, apiUrl: config.apiUrl)
+        let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
         let sessionAPI = SessionAPI(restHandler: restHandler)
         let userAPI = UserAPI(restHandler: restHandler)
         let deviceAPI = DeviceAPI(restHandler: restHandler)
@@ -124,7 +125,6 @@ class SendPushService: SendPushDelegate {
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
-
         }
         self.userAPI.unregisterUser(successHandler, onFailure: failureHandler)
     }

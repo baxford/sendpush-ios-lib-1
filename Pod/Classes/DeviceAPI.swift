@@ -5,7 +5,7 @@
 //  Created by Bob Axford on 11/12/2015.
 //
 //
-
+import UIKit
 
 class DeviceAPI: DeviceAPIDelegate {
 
@@ -37,19 +37,7 @@ class DeviceAPI: DeviceAPIDelegate {
             "language": langId
         ]
         
-        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-            if let err = error {
-                onFailure(statusCode: 500, message: err.description)
-            }
-            let statusCode = (response as! NSHTTPURLResponse).statusCode
-            if (statusCode != 200) {
-                onFailure(statusCode: statusCode, message: response!.description)
-            } else {
-                onSuccess()
-            }
-        }
-        
-        restHandler.postBody("/app/devices", body: body, method: "POST", completionHandler: postHandler)
+        restHandler.postBody("/app/devices", body: body, method: "POST", onSuccess: onSuccess, onFailure: onFailure)
         
     }
     

@@ -5,7 +5,7 @@
 //  Created by Bob Axford on 11/12/2015.
 //
 //
-
+import Foundation
 
 class SendPushConfig {
     

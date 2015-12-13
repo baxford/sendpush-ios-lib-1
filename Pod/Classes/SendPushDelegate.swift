@@ -6,6 +6,8 @@
 //
 //
 
+import Foundation
+
 public protocol SendPushDelegate {
     
     

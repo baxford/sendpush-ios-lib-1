@@ -5,6 +5,7 @@
 //  Created by Bob Axford on 11/12/2015.
 //
 //
+import Foundation
 
 class UserAPI: UserAPIDelegate {
 
@@ -25,24 +26,9 @@ class UserAPI: UserAPIDelegate {
         
         let urlStr = "/app/users/\(username)/\(deviceToken)"
         
-        var body = [String: String]()
-        
-        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-            if let err = error {
-                onFailure(statusCode: -1, message: err.description)
-                return
-            }
-            
-            let statusCode = (response as! NSHTTPURLResponse).statusCode
-            if (statusCode != 200) {
-                onFailure(statusCode: statusCode, message: response!.description)
-            } else {
-                onSuccess()
-            }
-            
-        }
-        
-        restHandler.postBody(urlStr, body: body, method: "PUT", completionHandler: postHandler)
+        let body = [String: String]()
+       
+        restHandler.postBody(urlStr, body: body, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
         
     }
     
@@ -52,25 +38,10 @@ class UserAPI: UserAPIDelegate {
         if let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
             
             let urlStr = "/app/users/\(username)/\(token)"
-            let url = NSURL(string: urlStr)
             
-            var body = [String: String]()
+            let body = [String: String]()
             
-            func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-                if let err = error {
-                    onFailure(statusCode: -1, message: err.description)
-
-                    return
-                }
-                print("Response: \(response)")
-                let statusCode = (response as! NSHTTPURLResponse).statusCode
-                if (statusCode != 200) {
-                    onFailure(statusCode: statusCode, message: response!.description)
-                } else {
-                    onSuccess()
-                }
-            }
-            restHandler.postBody(urlStr, body: body, method: "DELETE", completionHandler: postHandler)
+            restHandler.postBody(urlStr, body: body, method: "DELETE", onSuccess: onSuccess, onFailure: onFailure)
         }
         
     }

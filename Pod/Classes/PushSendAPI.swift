@@ -39,20 +39,7 @@ public class PushSendAPI: PushSendAPIDelegate {
             "tags": tagDict
         ]
         
-        func postHandler (data: NSData?, response: NSURLResponse?, error: NSError?) {
-            if let err = error {
-                onFailure(statusCode: -1, message: err.description)
-                return
-            }
-            let statusCode = (response as! NSHTTPURLResponse).statusCode
-            if (statusCode != 200) {
-                onFailure(statusCode: statusCode, message: response!.description)
-            } else {
-                onSuccess()
-            }
-        }
-    
-        restHandler.postBody(urlStr, body: body, method: "POST", completionHandler: postHandler)
+        restHandler.postBody(urlStr, body: body, method: "POST", onSuccess: onSuccess, onFailure: onFailure)
         
     }
     

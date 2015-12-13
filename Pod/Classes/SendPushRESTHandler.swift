@@ -17,18 +17,32 @@ public class SendPushRESTHandler {
     let platformSecret: String
     let apiUrl: String
    
-    init(platformID: String, platformSecret: String, apiUrl: String) {
+    init(apiUrl: String, platformID: String, platformSecret: String) {
         self.platformID = platformID
         self.platformSecret = platformSecret
         self.apiUrl = apiUrl
     }
     
-    func postBody(url: String, body: NSDictionary, method: String, completionHandler: ( (NSData?, NSURLResponse?, NSError?) -> Void)?) {
+    func postBody(url: String, body: NSDictionary, method: String, onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         let urlStr = "\(self.apiUrl)\(url)"
 
         let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         let request = NSMutableURLRequest(URL: url!)
         let session = NSURLSession.sharedSession()
+        
+        func postHandler (data: NSData?, resp: NSURLResponse?, error: NSError?) {
+            if let err = error {
+                onFailure(statusCode: 500, message: err.description)
+            }
+            if let response = resp {
+            let statusCode = (response as! NSHTTPURLResponse).statusCode
+            if (statusCode != 200) {
+                onFailure(statusCode: statusCode, message: response.description)
+            } else {
+                onSuccess()
+            }
+            }
+        }
         
         do {
             let json =  try NSJSONSerialization.dataWithJSONObject(body, options: [])
@@ -40,7 +54,7 @@ public class SendPushRESTHandler {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             
-            let task = session.dataTaskWithRequest(request, completionHandler: completionHandler!)
+            let task = session.dataTaskWithRequest(request, completionHandler: postHandler)
             
             task.resume()
         } catch {

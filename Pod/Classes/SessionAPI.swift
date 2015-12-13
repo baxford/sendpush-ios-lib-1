@@ -5,8 +5,9 @@
 //  Created by Bob Axford on 3/12/2015.
 //
 //
-
 import Foundation
+import UIKit
+
 public class SessionAPI {
     
     // intervals at which we post heartbeats - up to max of every 5 mins
@@ -69,22 +70,21 @@ public class SessionAPI {
     }
     
     func startSession() {
-        
-        let completionHandler = handleSession({
-            NSLog("Session done, starting heartbeat")
-            self.startHeartbeat()
-        })
-        
-        restHandler.postBody("/app/session", body: buildSessionBody(), method: "POST", completionHandler: completionHandler)
-        
+        func successHandler() {
+        }
+        func failureHandler(statusCode: Int, message: String) {
+            NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
+        }
+        restHandler.postBody("/app/session", body: buildSessionBody(), method: "POST", onSuccess: successHandler, onFailure: failureHandler)
     }
     
     func endSession() {
-        let completionHandler = handleSession({
-            NSLog("Session done, starting heartbeat")
-            self.stopHeartbeat()
-        })
-        restHandler.postBody("/app/session", body: buildSessionBody(), method: "PUT", completionHandler: completionHandler)
+        func successHandler() {
+        }
+        func failureHandler(statusCode: Int, message: String) {
+            NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
+        }
+        restHandler.postBody("/app/session", body: buildSessionBody(), method: "PUT", onSuccess: successHandler, onFailure: failureHandler)
     }
     
     // MARK: heartbeat
@@ -130,11 +130,12 @@ public class SessionAPI {
     }
     
     private func beat() {
-        let urlStr = "/app/session"
-        let ch = handleSession({
-            NSLog("Session done")
-        })
-        restHandler.postBody(urlStr, body: buildSessionBody(), method: "PUT", completionHandler: ch)
+        func successHandler() {
+        }
+        func failureHandler(statusCode: Int, message: String) {
+            NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
+        }
+        restHandler.postBody("/app/session", body: buildSessionBody(), method: "PUT", onSuccess: successHandler, onFailure: failureHandler)
     }
 
     /*

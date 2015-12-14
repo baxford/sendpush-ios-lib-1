@@ -16,6 +16,8 @@ public class SendPush: SendPushDelegate {
     
     var service: SendPushService
     let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+
+    
     /*
     ** init
     ** This function initializes the SendPush library
@@ -23,7 +25,8 @@ public class SendPush: SendPushDelegate {
     */
     private init() {
         // to enhance testability keep this as simple as possible and delegate all calls to the send push service
-        self.service = SendPushService(uiApplication: UIApplication.sharedApplication())
+        // Also use a protocol and extension to allow us to mock out UIApplication using the PushNotificationDelegate protocol
+        self.service = SendPushService(pushNotificationDelegate: UIApplication.sharedApplication())
     }
     
     

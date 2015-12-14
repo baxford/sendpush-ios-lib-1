@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class SessionService {
+public class SessionService: SessionServiceDelegate {
     
     // intervals at which we post heartbeats - up to max of every 5 mins
     let hearbeatIntervals: [Int]
@@ -16,7 +16,8 @@ public class SessionService {
     var deviceUniqueID: String
     var heartbeatCount = 0
     var sessionInProgress = false
-    var heartbeatActive = false;
+    var heartbeatActive = false
+    let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
     /*
     ** init
     ** This function initializes the SendPush library
@@ -101,7 +102,8 @@ public class SessionService {
                 DISPATCH_TIME_NOW,
                 Int64(delay * Double(NSEC_PER_SEC))
             ),
-            dispatch_get_main_queue(), closure
+            dispatch_get_global_queue(priority, 0),
+            closure
         )
     }
     

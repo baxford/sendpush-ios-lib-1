@@ -13,18 +13,17 @@ import UIKit
 class SendPushService: SendPushDelegate {
 
     let config: SendPushConfig
-    let sessionService: SessionService
+    let sessionService: SessionServiceDelegate
     let userAPI: UserAPIDelegate
     let deviceAPI: DeviceAPIDelegate
     let pushSendAPI: PushSendAPIDelegate
-    let uiApplication: UIApplication
-    
+    let pushNotificationDelegate: PushRegistrationDelegate
     
     /*
     ** init
     ** This function initializes the SendPush library
     */
-    convenience init(uiApplication: UIApplication) {
+    convenience init(pushNotificationDelegate: PushRegistrationDelegate) {
         let config = SendPushConfig()
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
@@ -32,15 +31,15 @@ class SendPushService: SendPushDelegate {
         let userAPI = UserAPI(restHandler: restHandler)
         let deviceAPI = DeviceAPI(restHandler: restHandler)
         let pushSendAPI = PushSendAPI(restHandler: restHandler)
-        self.init(config: config, uiApplication: uiApplication, sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
+        self.init(config: config, pushNotificationDelegate: pushNotificationDelegate, sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
     }
     
     /*
     * Designated initialiser. This can be used in test cases and inject mock dependencies
     */
-    init (config: SendPushConfig, uiApplication: UIApplication, sessionService: SessionService, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate) {
+    init (config: SendPushConfig, pushNotificationDelegate: PushRegistrationDelegate, sessionService: SessionServiceDelegate, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate) {
         self.config = config
-        self.uiApplication = uiApplication
+        self.pushNotificationDelegate = pushNotificationDelegate
         self.sessionService = sessionService
         self.userAPI = userAPI
         self.deviceAPI = deviceAPI
@@ -52,9 +51,9 @@ class SendPushService: SendPushDelegate {
             NSLog("Sendpush not configured properly, ignoring requestPush")
             return
         }
-        self.uiApplication.registerForRemoteNotifications()
+        self.pushNotificationDelegate.registerForRemoteNotifications()
         let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
-        self.uiApplication.registerUserNotificationSettings(settings)
+        self.pushNotificationDelegate.registerUserNotificationSettings(settings)
     }
     
     /*

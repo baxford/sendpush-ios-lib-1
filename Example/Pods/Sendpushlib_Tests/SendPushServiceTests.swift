@@ -9,7 +9,7 @@
 import XCTest
 
 class SendPushServiceTests: BaseTest {
-
+    
     let config = SendPushConfig(apiUrl:"APIURL", platformID: "PlatformID", platformSecret: "secret", valid: true);
     let pushRegistrationDelegate = MockPushRegistrationDelegate()
     let userAPI = MockUserAPI()
@@ -21,7 +21,7 @@ class SendPushServiceTests: BaseTest {
     
     override func setUp() {
         super.setUp()
-
+        
         service = SendPushService(config: config, pushNotificationDelegate: pushRegistrationDelegate,sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
         
     }
@@ -39,20 +39,25 @@ class SendPushServiceTests: BaseTest {
     }
     
     func testRegisterDevice() {
-        let token = ("<abc123>" as NSString).dataUsingEncoding(NSUTF8StringEncoding)
-        service.registerDevice(token)
-        let prefs = NSUserDefaults.standardUserDefaults()
-        if let savedToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
-            let expectedDeviceToken = NSString(data: token!, encoding: NSUTF8StringEncoding)
-
-            XCTAssertEqual(savedToken, expectedDeviceToken)
-        } else {
-            XCTFail("Expected saved device token")
+        // TODO BA - make sure the token format is right and tested
+        if let token = ("de3sfc3e1d1abc31ffed" as NSString).dataUsingEncoding(NSASCIIStringEncoding) {
+            service.registerDevice(token)
+            let prefs = NSUserDefaults.standardUserDefaults()
+            if let savedToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+                let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
+                
+                let expectTokenString: String = ( token.description as NSString )
+                    .stringByTrimmingCharactersInSet( characterSet )
+                    .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+                
+                XCTAssertEqual(savedToken, expectTokenString)
+            } else {
+                XCTFail("Expected saved device token")
+            }
         }
         
-
     }
-
-
-   
+    
+    
+    
 }

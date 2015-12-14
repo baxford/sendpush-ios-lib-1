@@ -13,7 +13,7 @@ import UIKit
 class SendPushService: SendPushDelegate {
 
     let config: SendPushConfig
-    let sessionAPI: SessionAPI
+    let sessionService: SessionService
     let userAPI: UserAPIDelegate
     let deviceAPI: DeviceAPIDelegate
     let pushSendAPI: PushSendAPIDelegate
@@ -28,20 +28,20 @@ class SendPushService: SendPushDelegate {
         let config = SendPushConfig()
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
-        let sessionAPI = SessionAPI(restHandler: restHandler)
+        let sessionService = SessionService(restHandler: restHandler)
         let userAPI = UserAPI(restHandler: restHandler)
         let deviceAPI = DeviceAPI(restHandler: restHandler)
         let pushSendAPI = PushSendAPI(restHandler: restHandler)
-        self.init(config: config, uiApplication: uiApplication, sessionAPI: sessionAPI, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
+        self.init(config: config, uiApplication: uiApplication, sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
     }
     
     /*
     * Designated initialiser. This can be used in test cases and inject mock dependencies
     */
-    init (config: SendPushConfig, uiApplication: UIApplication, sessionAPI: SessionAPI, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate) {
+    init (config: SendPushConfig, uiApplication: UIApplication, sessionService: SessionService, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate) {
         self.config = config
         self.uiApplication = uiApplication
-        self.sessionAPI = sessionAPI
+        self.sessionService = sessionService
         self.userAPI = userAPI
         self.deviceAPI = deviceAPI
         self.pushSendAPI = pushSendAPI
@@ -71,7 +71,7 @@ class SendPushService: SendPushDelegate {
             .stringByTrimmingCharactersInSet( characterSet )
             .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
         
-        func successHandler() {
+        func successHandler(statusCode: Int, data: NSData?) {
             let prefs = NSUserDefaults.standardUserDefaults()
             prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
             
@@ -100,7 +100,7 @@ class SendPushService: SendPushDelegate {
         prefs.setValue(tags, forKey: SendPushConstants.USER_TAGS)
         if let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
             // we can only register this user once we have their device token, so let's check
-            func successHandler() {
+            func successHandler(statusCode: Int, data: NSData?) {
                 prefs.setValue(true, forKey: SendPushConstants.USER_REGISTERED)
             }
             func failureHandler(statusCode: Int, message: String) {
@@ -119,14 +119,16 @@ class SendPushService: SendPushDelegate {
         }
         let prefs = NSUserDefaults.standardUserDefaults()
         
-        func successHandler() {
+        func successHandler(statusCode: Int, data: NSData?) {
             prefs.removeObjectForKey(SendPushConstants.USERNAME)
             prefs.removeObjectForKey(SendPushConstants.USER_REGISTERED)
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
         }
-        self.userAPI.unregisterUser(successHandler, onFailure: failureHandler)
+        if let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
+            self.userAPI.unregisterUser(username, deviceToken: deviceToken, onSuccess: successHandler, onFailure: failureHandler)
+        }
     }
     
     func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
@@ -135,7 +137,7 @@ class SendPushService: SendPushDelegate {
             return
         }
         let prefs = NSUserDefaults.standardUserDefaults()
-        func successHandler() {
+        func successHandler(statusCode: Int, data: NSData?) {
             NSLog("Successful sendPushToUsername")
         }
         func failureHandler(statusCode: Int, message: String) {

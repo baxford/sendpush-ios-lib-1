@@ -9,7 +9,7 @@ import UIKit
 
 class DeviceAPI: DeviceAPIDelegate {
 
-    var restHandler: SendPushRESTHandler
+    let restHandler: SendPushRESTHandler
     
     
     /*
@@ -22,7 +22,7 @@ class DeviceAPI: DeviceAPIDelegate {
         self.restHandler = restHandler
     }
     
-    func registerDevice(deviceToken: String, onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func registerDevice(deviceToken: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         
         let model = UIDevice.currentDevice().model
         let devType = UIDevice.currentDevice().systemName

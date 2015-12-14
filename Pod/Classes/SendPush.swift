@@ -15,7 +15,7 @@ public class SendPush: SendPushDelegate {
     public static let sharedInstance = SendPush()
     
     var service: SendPushService
-    
+    let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
     /*
     ** init
     ** This function initializes the SendPush library
@@ -41,7 +41,10 @@ public class SendPush: SendPushDelegate {
     * Called by the owning app when a user has accepted push notifications.
     */
     @objc public func registerDevice(deviceToken: NSData!) {
-        self.service.registerDevice(deviceToken)
+        // do this in a background thread to avoid blocking main thread
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.service.registerDevice(deviceToken)
+        }
     }
     
     
@@ -49,21 +52,30 @@ public class SendPush: SendPushDelegate {
     * This is called as soon as the username is available (eg at Login)
     */
     @objc public func registerUser(username: String, tags: [String: String]?) {
-        self.service.registerUser(username, tags: tags)
+        // do this in a background thread to avoid blocking main thread
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.service.registerUser(username, tags: tags)
+        }
     }
     
     /*
     * Unregister the current user
     */
     @objc public func unregisterUser() {
-        self.service.unregisterUser()
+        // do this in a background thread to avoid blocking main thread
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.service.unregisterUser()
+        }
     }
     
     /*
     * Send a push to the given username
     */
     @objc public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
-        self.service.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+        // do this in a background thread to avoid blocking main thread
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            self.service.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+        }
     }
     
     

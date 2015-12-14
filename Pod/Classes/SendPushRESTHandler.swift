@@ -23,24 +23,29 @@ public class SendPushRESTHandler {
         self.apiUrl = apiUrl
     }
     
-    func postBody(url: String, body: NSDictionary, method: String, onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func postBody(url: String, body: NSDictionary, method: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         let urlStr = "\(self.apiUrl)\(url)"
 
         let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         let request = NSMutableURLRequest(URL: url!)
         let session = NSURLSession.sharedSession()
         
-        func postHandler (data: NSData?, resp: NSURLResponse?, error: NSError?) {
+        func completionHandler (data: NSData?, resp: NSURLResponse?, error: NSError?) {
             if let err = error {
-                onFailure(statusCode: 500, message: err.description)
+                onFailure(statusCode: 503, message: err.description)
+                return
             }
             if let response = resp {
-            let statusCode = (response as! NSHTTPURLResponse).statusCode
-            if (statusCode != 200) {
-                onFailure(statusCode: statusCode, message: response.description)
+                let statusCode = (response as! NSHTTPURLResponse).statusCode
+                if (statusCode >= 200 && statusCode < 300) {
+                    onSuccess(statusCode: statusCode, data: data)
+                } else {
+                    onFailure(statusCode: statusCode, message: response.description)
+                }
+                return
             } else {
-                onSuccess()
-            }
+                onFailure(statusCode: 503, message: "No Response from server")
+                return
             }
         }
         
@@ -54,7 +59,7 @@ public class SendPushRESTHandler {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             
-            let task = session.dataTaskWithRequest(request, completionHandler: postHandler)
+            let task = session.dataTaskWithRequest(request, completionHandler: completionHandler)
             
             task.resume()
         } catch {

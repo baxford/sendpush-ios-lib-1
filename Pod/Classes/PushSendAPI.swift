@@ -26,7 +26,7 @@ public class PushSendAPI: PushSendAPIDelegate {
     }
     
     // This uses the sendpush API to send a push to the specified username, if user is not registered or doesn't have a registered device, no push is sent.
-    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         let urlStr = "/app/users/\(username)/messages"
         
         var tagDict = [Dictionary<String, String>]()

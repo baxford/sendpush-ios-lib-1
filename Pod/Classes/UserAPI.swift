@@ -22,7 +22,7 @@ class UserAPI: UserAPIDelegate {
         self.restHandler = restHandler
     }
     
-    func registerUser(username: String, deviceToken: String, tags: [String: String]?, onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func registerUser(username: String, deviceToken: String, tags: [String: String]?, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         
         let urlStr = "/app/users/\(username)/\(deviceToken)"
         
@@ -32,18 +32,13 @@ class UserAPI: UserAPIDelegate {
         
     }
     
-    func unregisterUser(onSuccess: () -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
-        let prefs = NSUserDefaults.standardUserDefaults()
+    func unregisterUser(username: String, deviceToken: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         
-        if let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
+        let urlStr = "/app/users/\(username)/\(deviceToken)"
             
-            let urlStr = "/app/users/\(username)/\(token)"
-            
-            let body = [String: String]()
-            
-            restHandler.postBody(urlStr, body: body, method: "DELETE", onSuccess: onSuccess, onFailure: onFailure)
-        }
+        let body = [String: String]()
         
+        restHandler.postBody(urlStr, body: body, method: "DELETE", onSuccess: onSuccess, onFailure: onFailure)
     }
 
 }

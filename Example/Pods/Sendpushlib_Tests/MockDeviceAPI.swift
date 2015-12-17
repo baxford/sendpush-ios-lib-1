@@ -11,7 +11,7 @@ import Foundation
 class MockDeviceAPI: DeviceAPIDelegate {
     
     var deviceToken: String?
-    public var respondWithStatus: Int = 200
+    var respondWithStatus: Int = 200
     
     func registerDevice(deviceToken: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         self.deviceToken = deviceToken
@@ -20,5 +20,9 @@ class MockDeviceAPI: DeviceAPIDelegate {
         } else {
             onFailure(statusCode: respondWithStatus, message:"Error")
         }
+    }
+    
+    func reset() {
+        self.deviceToken = nil
     }
 }

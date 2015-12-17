@@ -11,13 +11,14 @@
 */
 import UIKit
 class SendPushService: SendPushDelegate {
-
+    
     let config: SendPushConfig
     let sessionService: SessionServiceDelegate
     let userAPI: UserAPIDelegate
     let deviceAPI: DeviceAPIDelegate
     let pushSendAPI: PushSendAPIDelegate
     let pushNotificationDelegate: PushRegistrationDelegate
+    let sendPushData: SendPushDataDelegate
     
     /*
     ** init
@@ -31,19 +32,21 @@ class SendPushService: SendPushDelegate {
         let userAPI = UserAPI(restHandler: restHandler)
         let deviceAPI = DeviceAPI(restHandler: restHandler)
         let pushSendAPI = PushSendAPI(restHandler: restHandler)
-        self.init(config: config, pushNotificationDelegate: pushNotificationDelegate, sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI)
+        let sendPushData = SendPushData(platformID: config.platformID)
+        self.init(config: config, pushNotificationDelegate: pushNotificationDelegate, sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI, sendPushData: sendPushData)
     }
     
     /*
     * Designated initialiser. This can be used in test cases and inject mock dependencies
     */
-    init (config: SendPushConfig, pushNotificationDelegate: PushRegistrationDelegate, sessionService: SessionServiceDelegate, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate) {
+    init (config: SendPushConfig, pushNotificationDelegate: PushRegistrationDelegate, sessionService: SessionServiceDelegate, userAPI: UserAPIDelegate, deviceAPI: DeviceAPIDelegate, pushSendAPI: PushSendAPIDelegate, sendPushData: SendPushDataDelegate) {
         self.config = config
         self.pushNotificationDelegate = pushNotificationDelegate
         self.sessionService = sessionService
         self.userAPI = userAPI
         self.deviceAPI = deviceAPI
         self.pushSendAPI = pushSendAPI
+        self.sendPushData = sendPushData
     }
     
     func requestPush() {
@@ -64,15 +67,17 @@ class SendPushService: SendPushDelegate {
             NSLog("Sendpush not configured properly, ignoring registerDevice")
             return
         }
-        let characterSet: NSCharacterSet = NSCharacterSet( charactersInString: "<>" )
+        let tokenChars = UnsafePointer<CChar>(deviceToken.bytes)
+        var tokenString = ""
         
-        let deviceTokenString: String = ( deviceToken.description as NSString )
-            .stringByTrimmingCharactersInSet( characterSet )
-            .stringByReplacingOccurrencesOfString( " ", withString: "" ) as String
+        for var i = 0; i < deviceToken.length; i++ {
+            let char = tokenChars[i]
+            tokenString += String(format: "%02.2hhx", arguments: [char])
+        }
         
         func successHandler(statusCode: Int, data: NSData?) {
             let prefs = NSUserDefaults.standardUserDefaults()
-            prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
+            prefs.setValue(tokenString, forKey: SendPushConstants.DEVICE_TOKEN)
             
             // now if the user isn't registered, we need to do it now
             if !prefs.boolForKey(SendPushConstants.USER_REGISTERED), let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let userTags = prefs.dictionaryForKey(SendPushConstants.USER_TAGS) as? Dictionary<String, String> {
@@ -82,7 +87,8 @@ class SendPushService: SendPushDelegate {
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in registerDevice, status: \(statusCode), message: \(message)")
         }
-        self.deviceAPI.registerDevice(deviceTokenString, onSuccess: successHandler,  onFailure: failureHandler)
+        self.deviceAPI.registerDevice(tokenString, onSuccess: successHandler,  onFailure: failureHandler)
+        
     }
     
     
@@ -121,6 +127,7 @@ class SendPushService: SendPushDelegate {
         func successHandler(statusCode: Int, data: NSData?) {
             prefs.removeObjectForKey(SendPushConstants.USERNAME)
             prefs.removeObjectForKey(SendPushConstants.USER_REGISTERED)
+            prefs.removeObjectForKey(SendPushConstants.USER_TAGS)
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")

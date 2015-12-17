@@ -7,9 +7,9 @@
 //
 
 struct SendPushConstants {
-    static let DEVICE_TOKEN = "sendPushDeviceToken"
-    static let DEVICE_UNIQUE_ID = "sendPushDeviceToken"
-    static let USERNAME = "sendPushUsername"
-    static let USER_TAGS = "sendPushUserTags"
-    static let USER_REGISTERED = "sendPushUserRegistered"
+    static let DEVICE_TOKEN = "SENDPUSH_DT_"
+    static let DEVICE_UNIQUE_ID = "SENDPUSH_DUID_"
+    static let USERNAME = "SENDPUSH_USER_"
+    static let USER_TAGS = "SENDPUSH_USERTAGS_"
+    static let USER_REGISTERED = "SENDPUSH_REG_"
 }

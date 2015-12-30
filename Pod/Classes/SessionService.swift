@@ -32,7 +32,8 @@ public class SessionService: SessionServiceDelegate {
         if let deviceId = prefs.stringForKey(SendPushConstants.DEVICE_UNIQUE_ID) {
             self.deviceUniqueID = deviceId
         } else {
-            self.deviceUniqueID = "something"
+            let uuid = NSUUID().UUIDString
+            self.deviceUniqueID = uuid
             prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
         }
         self.sessionAPI = SessionAPI(restHandler: restHandler, deviceUniqueID: self.deviceUniqueID)

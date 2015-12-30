@@ -31,17 +31,11 @@ public class SessionAPI: SessionAPIDelegate {
             "device_id": self.deviceUniqueID
         ]
         
-        if let _ = prefs.stringForKey("sendPushUsername") {
-//            body.setValue(username, forKey:"username")
-            body.setValue(true, forKey: "loggedIn")
-        } else {
-            body.setValue(false, forKey: "loggedIn")
+        if let username = prefs.stringForKey(SendPushConstants.USERNAME) {
+            body.setValue(username, forKey: "username")
         }
-        if let _ = prefs.stringForKey("sendPushDeviceToken") {
-//            body.setValue(deviceToken, forKey:"device_token")
-            body.setValue(true, forKey: "opt_in_push")
-        } else {
-            body.setValue(false, forKey: "opt_in_push")
+        if let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+            body.setValue(deviceToken, forKey:"device_token")
         }
 
         return body

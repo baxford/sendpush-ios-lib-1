@@ -27,9 +27,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // start Fabric
         Fabric.with([Crashlytics.self])
+        
         return true
     }
 
+    func bootstrapSendPush(environment:String) {
+        // bootstrap sendpush with whatever environment is default
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        
+        // read configuration for sendpush
+        if let dict = myDict {
+            if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
+                if let env = (NSDictionary:sendpush.valueForKey(environment)) {
+                    self.sendpush.bootstrap(env as! NSDictionary)
+                }
+            }
+        }
+
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -81,6 +100,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notifiAlert.show()
     }
     
+    func setSendpushEnvironment(environment: String) {
+        
+    }
     
     /*
     * Call this when we want to ask our user to accept push notifications (at the right time)

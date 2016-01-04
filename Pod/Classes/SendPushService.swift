@@ -24,8 +24,8 @@ class SendPushService: SendPushDelegate {
     ** init
     ** This function initializes the SendPush library
     */
-    convenience init(pushNotificationDelegate: PushRegistrationDelegate) {
-        let config = SendPushConfig()
+    convenience init(pushNotificationDelegate: PushRegistrationDelegate, sendpushConfig: NSDictionary) {
+        let config = SendPushConfig(sendpushConfig: sendpushConfig)
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
         let sessionService = SessionService(restHandler: restHandler)

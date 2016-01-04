@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate {
+class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var username: UITextField!
 
@@ -18,6 +18,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var badge: UITextField!
 
+    @IBOutlet weak var environment: UIPickerView!
+    
+    var environmentData: [String] = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -25,6 +29,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         sendToUsername.delegate=self
         pushContent.delegate=self
         badge.delegate=self
+        environment.delegate = self
+        environment.dataSource = self
+        environmentData = ["development", "test", "staging", "production"]
+        environment.selectRow(2, inComponent: 0, animated: true)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,6 +41,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         // Dispose of any resources that can be recreated.
     }
 
+    // The number of columns of data
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // The number of rows of data
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return environmentData.count
+    }
+    
+    // The data to return for the row and component (column) that's being passed in
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return environmentData[row]
+    }
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let env = environmentData[row]
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.bootstrapSendPush(env)
+        
+    }
+
+    
     @IBAction func registerForPush(sender: AnyObject) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         appDelegate.registerForPush()

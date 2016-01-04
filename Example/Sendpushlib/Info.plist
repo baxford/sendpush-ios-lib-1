@@ -43,12 +43,42 @@
 	<true/>
 	<key>SendPush</key>
 	<dict>
-		<key>APIUrl</key>
-		<string>http://baxford.ngrok.io</string>
-		<key>PlatformSecret</key>
-		<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
-		<key>PlatformID</key>
-		<string>1</string>
+		<key>development</key>
+		<dict>
+			<key>PlatformID</key>
+			<string>1</string>
+			<key>PlatformSecret</key>
+			<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
+			<key>APIUrl</key>
+			<string>http://baxford.ngrok.io</string>
+		</dict>
+		<key>test</key>
+		<dict>
+			<key>PlatformID</key>
+			<string>1</string>
+			<key>PlatformSecret</key>
+			<string>test</string>
+			<key>APIUrl</key>
+			<string>http://stagepushapi.herokuapp.com</string>
+		</dict>
+		<key>staging</key>
+		<dict>
+			<key>PlatformID</key>
+			<string>2</string>
+			<key>PlatformSecret</key>
+			<string>1988736caf1f78a56c7d5da0d4fb4b28fa6e70be4ef7d14817973178e31eb8fd</string>
+			<key>APIUrl</key>
+			<string>http://stagepushapi.herokuapp.com/</string>
+		</dict>
+		<key>production</key>
+		<dict>
+			<key>PlatformSecret</key>
+			<string>test</string>
+			<key>PlatformID</key>
+			<string>1</string>
+			<key>APIUrl</key>
+			<string>https://api.sendpush.co</string>
+		</dict>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

@@ -12,6 +12,11 @@ public protocol SendPushDelegate {
     
     
     /*
+    * called to restart the current users session
+    */
+    func restartSession()
+    
+    /*
     *    This is called by the owning app when they want the user to register for push notifications.
     */
     func requestPush()

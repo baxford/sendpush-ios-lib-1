@@ -55,6 +55,11 @@ public class SessionService: SessionServiceDelegate {
         self.stopHeartbeat()
     }
     
+    func restartSession() {
+        // if we stop the current heartbeat process and start a new one it will start a new session
+        self.stopHeartbeat()
+        self.startHeartbeat()
+    }
     
     // MARK: heartbeat
     
@@ -91,8 +96,8 @@ public class SessionService: SessionServiceDelegate {
         NSLog("Session heartbeat \(self.heartbeatCount), next at \(interval)")
         if (self.heartbeatActive) {
             beat()
-            delay(interval, closure: { [unowned self] () -> () in
-                self.heartbeatCallback()
+            delay(interval, closure: { [weak self] () -> () in
+                self?.heartbeatCallback()
             })
         }
     }

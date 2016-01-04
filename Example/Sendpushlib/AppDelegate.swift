@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
                 if let env = (NSDictionary:sendpush.valueForKey(environment)) {
                     self.sendpush.bootstrap(env as! NSDictionary)
+//                    self.sendpush.restartSession()
                 }
             }
         }

@@ -32,8 +32,20 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
         environment.delegate = self
         environment.dataSource = self
         environmentData = ["development", "test", "staging", "production"]
-        environment.selectRow(2, inComponent: 0, animated: true)
-        
+        //check if we have a previous selection for environment
+        let prefs = NSUserDefaults.standardUserDefaults()
+        var selectedEnv: Int
+        if let index = prefs.objectForKey("sp_environment") {
+            selectedEnv = index as! Int
+        } else {
+            // default to staging and remember this
+            selectedEnv = 2
+            prefs.setValue(selectedEnv, forKey: "sp_environment")
+        }
+        environment.selectRow(selectedEnv, inComponent: 0, animated: true)
+        let env = environmentData[selectedEnv]
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.bootstrapSendPush(env)
     }
 
     override func didReceiveMemoryWarning() {

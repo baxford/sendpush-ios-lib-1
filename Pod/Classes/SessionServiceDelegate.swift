@@ -10,4 +10,5 @@ import Foundation
 
 protocol SessionServiceDelegate {
     
+    func restartSession()
 }

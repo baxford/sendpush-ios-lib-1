@@ -59,7 +59,7 @@
 			<key>PlatformSecret</key>
 			<string>test</string>
 			<key>APIUrl</key>
-			<string>http://stagepushapi.herokuapp.com</string>
+			<string>http://stagepushapi.herokuapp.com/</string>
 		</dict>
 		<key>staging</key>
 		<dict>
@@ -68,7 +68,7 @@
 			<key>PlatformSecret</key>
 			<string>1988736caf1f78a56c7d5da0d4fb4b28fa6e70be4ef7d14817973178e31eb8fd</string>
 			<key>APIUrl</key>
-			<string>http://stagepushapi.herokuapp.com/</string>
+			<string>http://baxford.ngrok.io</string>
 		</dict>
 		<key>production</key>
 		<dict>

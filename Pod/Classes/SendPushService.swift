@@ -49,6 +49,13 @@ class SendPushService: SendPushDelegate {
         self.sendPushData = sendPushData
     }
     
+    func restartSession() {
+        self.sessionService.restartSession()
+    }
+    
+    /*
+    * Requeset push notifications from user
+    */
     func requestPush() {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring requestPush")

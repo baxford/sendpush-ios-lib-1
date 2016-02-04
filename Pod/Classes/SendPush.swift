@@ -86,11 +86,11 @@ public class SendPush: SendPushDelegate {
     /*
     * Unregister the current user
     */
-    @objc public func unregisterUser() {
+    @objc public func unregisterUser(username: String) {
         if checkBootstrapped() {
             // do this in a background thread to avoid blocking main thread
             dispatch_async(dispatch_get_global_queue(priority, 0)) {
-                self.service?.unregisterUser()
+                self.service?.unregisterUser(username)
             }
         }
     }

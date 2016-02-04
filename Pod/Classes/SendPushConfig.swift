@@ -1,4 +1,4 @@
-//
+    //
 //  SendPushConfig.swift
 //  Pods
 //
@@ -15,13 +15,14 @@ class SendPushConfig {
     let platformID: String
     let platformSecret: String
     let valid: Bool
+    let allowMutipleUsersPerDevice: Bool
     
     convenience init(sendpushConfig: NSDictionary) {
         var valid = true;
         var apiUrl: String
         var platformID: String
         var platformSecret: String
-        
+        var allowMutipleUsersPerDevice: Bool
         
         if let url = sendpushConfig.valueForKey("APIUrl") as? String {
             apiUrl = url
@@ -46,16 +47,32 @@ class SendPushConfig {
             valid = false
         }
         
-        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, valid: valid)
+        if let secret = sendpushConfig.valueForKey("PlatformSecret") as? String {
+            platformSecret = secret
+        } else {
+            NSLog("SendPush Exception: No PlatformSecret in info.plist")
+            platformSecret = "invalid"
+            valid = false
+        }
+        
+        if let allowMultipleUsers = sendpushConfig.valueForKey("MultipleUsersPerDevice") as? Bool {
+            allowMutipleUsersPerDevice = allowMultipleUsers
+        } else {
+            allowMutipleUsersPerDevice = false
+        }
+        
+        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, valid: valid,
+            allowMutipleUsersPerDevice: allowMutipleUsersPerDevice)
     }
     
     /**
      * Initialiser
      */
-    init(apiUrl: String, platformID: String, platformSecret: String, valid: Bool) {
+    init(apiUrl: String, platformID: String, platformSecret: String, valid: Bool, allowMutipleUsersPerDevice: Bool) {
         self.apiUrl = apiUrl
         self.platformID = platformID
         self.platformSecret = platformSecret
         self.valid = valid
+        self.allowMutipleUsersPerDevice = allowMutipleUsersPerDevice
     }
 }

@@ -35,7 +35,7 @@ public protocol SendPushDelegate {
     /*
     * Unregister the current user
     */
-    func unregisterUser()
+    func unregisterUser(username: String)
     
     /*
     * Send a push to the given username

@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -20,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.5</string>
+	<string>1.7</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -41,43 +36,52 @@
 	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>SendPush</key>
 	<dict>
 		<key>development</key>
 		<dict>
-			<key>PlatformID</key>
-			<string>1</string>
-			<key>PlatformSecret</key>
-			<string>48c0aeeef5d2790ce4ede8f3ebc20a95d9ad465e6b3722d1b2bfe5143d485a3f</string>
+			<key>MultipleUsersPerDevice</key>
+			<false/>
 			<key>APIUrl</key>
 			<string>http://baxford.ngrok.io</string>
-		</dict>
-		<key>test</key>
-		<dict>
 			<key>PlatformID</key>
-			<string>1</string>
+			<string>3</string>
 			<key>PlatformSecret</key>
-			<string>test</string>
-			<key>APIUrl</key>
-			<string>http://stagepushapi.herokuapp.com/</string>
-		</dict>
-		<key>staging</key>
-		<dict>
-			<key>PlatformID</key>
-			<string>2</string>
-			<key>PlatformSecret</key>
-			<string>1988736caf1f78a56c7d5da0d4fb4b28fa6e70be4ef7d14817973178e31eb8fd</string>
-			<key>APIUrl</key>
-			<string>http://baxford.ngrok.io</string>
+			<string>8f57509536c7ad217b504d83e7d3c6a343146c9870fdcbdbc52b672a14525bc8</string>
 		</dict>
 		<key>production</key>
 		<dict>
-			<key>PlatformSecret</key>
-			<string>test</string>
+			<key>APIUrl</key>
+			<string>http://api.sendpush.co</string>
 			<key>PlatformID</key>
 			<string>1</string>
+			<key>PlatformSecret</key>
+			<string>12ae1cd077cee7eab194ae75291d0ad56e03378fe8fba79fdeb04089ee2148f7</string>
+		</dict>
+		<key>staging</key>
+		<dict>
+			<key>MultipleUsersPerDevice</key>
+			<true/>
 			<key>APIUrl</key>
-			<string>https://api.sendpush.co</string>
+			<string>http://stagepushapi.herokuapp.com</string>
+			<key>PlatformID</key>
+			<string>12</string>
+			<key>PlatformSecret</key>
+			<string>2c39d64bfa66eee25c47da5eccaa9e4f322c22b6d64cc55cc086207879435eed</string>
+		</dict>
+		<key>test</key>
+		<dict>
+			<key>APIUrl</key>
+			<string>http://stagepushapi.herokuapp.com</string>
+			<key>PlatformID</key>
+			<string>12</string>
+			<key>PlatformSecret</key>
+			<string>2c39d64bfa66eee25c47da5eccaa9e4f322c22b6d64cc55cc086207879435eed</string>
 		</dict>
 	</dict>
 	<key>UILaunchStoryboardName</key>

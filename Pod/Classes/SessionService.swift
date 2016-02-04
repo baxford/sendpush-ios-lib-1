@@ -57,7 +57,6 @@ public class SessionService: SessionServiceDelegate {
     
     func restartSession() {
         // if we stop the current heartbeat process and start a new one it will start a new session
-        self.stopHeartbeat()
         self.startHeartbeat()
     }
     
@@ -66,11 +65,9 @@ public class SessionService: SessionServiceDelegate {
     func startHeartbeat() {
         self.heartbeatActive = true
         self.heartbeatCount = 0
-        let backoff = hearbeatIntervals[heartbeatCount]
-        let interval = Double(backoff) * 1.0
-        delay(interval, closure: { [unowned self] () -> () in
-            self.heartbeatCallback()
-        })
+        self.sessionInProgress = false
+
+        self.beat()
     }
     
     func stopHeartbeat() {
@@ -79,7 +76,7 @@ public class SessionService: SessionServiceDelegate {
         self.sessionInProgress = false
         // fire off a final call to extendSession
         func successHandler(statusCode: Int, data: NSData?) {
-            NSLog("Session extended")
+            NSLog("Session ended")
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in endSession, status: \(statusCode), message: \(message)")
@@ -87,7 +84,7 @@ public class SessionService: SessionServiceDelegate {
         sessionAPI.extendSession(successHandler, onFailure: failureHandler)
     }
     
-    func heartbeatCallback() {
+    func queueNextHeartbeat() {
         if (heartbeatCount < hearbeatIntervals.count - 1) {
             heartbeatCount += 1
         }
@@ -95,9 +92,8 @@ public class SessionService: SessionServiceDelegate {
         let interval = Double(backoff) * 1.0
         NSLog("Session heartbeat \(self.heartbeatCount), next at \(interval)")
         if (self.heartbeatActive) {
-            beat()
             delay(interval, closure: { [weak self] () -> () in
-                self?.heartbeatCallback()
+                self?.beat()
             })
         }
     }
@@ -114,21 +110,24 @@ public class SessionService: SessionServiceDelegate {
     }
     
     private func beat() {
+        func failureHandler(statusCode: Int, message: String) {
+            let msg = sessionInProgress ? "Error in extendSession" :  "Error in startSession"
+            NSLog("\(msg): \(statusCode), message: \(message)")
+            
+            self.queueNextHeartbeat()
+        }
         if (!self.sessionInProgress) {
             func successHandler(statusCode: Int, data: NSData?) {
                 NSLog("Session started")
+                // set to true so that once the first success (ie startSession) succeeds, from then on we'll call extendSession
                 self.sessionInProgress = true
-            }
-            func failureHandler(statusCode: Int, message: String) {
-                NSLog("Error in startSession, status: \(statusCode), message: \(message)")
+                self.queueNextHeartbeat()
             }
             sessionAPI.startSession(successHandler, onFailure: failureHandler)
         } else {
             func successHandler(statusCode: Int, data: NSData?) {
                 NSLog("Session extended")
-            }
-            func failureHandler(statusCode: Int, message: String) {
-                NSLog("Error in extendSession, status: \(statusCode), message: \(message)")
+                self.queueNextHeartbeat()
             }
             sessionAPI.extendSession(successHandler, onFailure: failureHandler)
         }

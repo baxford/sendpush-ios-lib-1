@@ -1,4 +1,4 @@
-//
+	//
 //  AppDelegate.swift
 //  Sendpushlib
 //
@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
                 if let env = (NSDictionary:sendpush.valueForKey(environment)) {
                     self.sendpush.bootstrap(env as! NSDictionary)
-//                    self.sendpush.restartSession()
+                    self.sendpush.restartSession()
                 }
             }
         }
@@ -136,8 +136,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /*
     * This simulates a user logging out
     */
-    func clearUsername() {
-        sendpush.unregisterUser()
+    func clearUsername(username: String) {
+        sendpush.unregisterUser(username)
         let notifiAlert = UIAlertView()
         notifiAlert.title = "User Cleared"
         notifiAlert.message = "User cleared"

@@ -32,16 +32,17 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
         environment.delegate = self
         environment.dataSource = self
         environmentData = ["development", "test", "staging", "production"]
+//        environmentData = ["staging", "production"]
         //check if we have a previous selection for environment
         let prefs = NSUserDefaults.standardUserDefaults()
         var selectedEnv: Int
-        if let index = prefs.objectForKey("sp_environment") {
-            selectedEnv = index as! Int
-        } else {
+//        if let index = prefs.objectForKey("sp_environment") {
+//            selectedEnv = index as! Int
+//        } else {
             // default to staging and remember this
-            selectedEnv = 2
+            selectedEnv = 0
             prefs.setValue(selectedEnv, forKey: "sp_environment")
-        }
+//        }
         environment.selectRow(selectedEnv, inComponent: 0, animated: true)
         let env = environmentData[selectedEnv]
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
@@ -90,7 +91,9 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
     
     @IBAction func clearUsername(sender: AnyObject) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.clearUsername()
+        if let un = username.text {
+            appDelegate.clearUsername(un)
+        }
     }
     
     @IBAction func sendPushToUsername(sender: AnyObject) {

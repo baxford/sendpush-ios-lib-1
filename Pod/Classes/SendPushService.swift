@@ -119,12 +119,13 @@ class SendPushService: SendPushDelegate {
                 NSLog("Error in registerUser, status: \(statusCode), message: \(message)")
                 prefs.setValue(false, forKey: SendPushConstants.USER_REGISTERED)
             }
-            self.userAPI.registerUser(username, deviceToken: token, tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
+            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: config.allowMutipleUsersPerDevice,
+                tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
         }
         
     }
     
-    func unregisterUser() {
+    func unregisterUser(username: String) {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring unregisterUser")
             return
@@ -139,7 +140,7 @@ class SendPushService: SendPushDelegate {
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
         }
-        if let username = prefs.stringForKey(SendPushConstants.USERNAME) as String?, let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
+        if let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
             self.userAPI.unregisterUser(username, deviceToken: deviceToken, onSuccess: successHandler, onFailure: failureHandler)
         }
     }

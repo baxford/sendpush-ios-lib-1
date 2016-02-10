@@ -21,20 +21,6 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nkR-zB-Z4x">
                                 <rect key="frame" x="20" y="28" width="560" height="572"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R0q-dp-c5p">
-                                        <rect key="frame" x="187" y="104" width="85" height="31"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="85" id="Jdp-td-qpc"/>
-                                            <constraint firstAttribute="width" constant="85" id="lnc-mW-gLL"/>
-                                        </constraints>
-                                        <state key="normal" title="Clear User">
-                                            <color key="titleColor" red="0.6056138029" green="0.96815514339999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="clearUsername:" destination="vXZ-lx-hvc" eventType="touchDown" id="iPl-hW-3aO"/>
-                                        </connections>
-                                    </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kj6-uZ-cUb">
                                         <rect key="frame" x="20" y="66" width="189" height="30"/>
                                         <constraints>
@@ -114,13 +100,13 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6b0-dG-DXX">
-                                        <rect key="frame" x="20" y="105" width="142" height="30"/>
+                                        <rect key="frame" x="20" y="105" width="110" height="30"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="142" id="AsZ-1H-MEU"/>
                                             <constraint firstAttribute="width" constant="142" id="kWg-30-evW"/>
                                         </constraints>
-                                        <state key="normal" title="Set Current User">
+                                        <state key="normal" title="Set User">
                                             <color key="titleColor" red="0.6056138029" green="0.96815514339999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
@@ -130,6 +116,20 @@
                                     <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZR9-2L-CAd">
                                         <rect key="frame" x="20" y="328" width="225" height="72"/>
                                     </pickerView>
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R0q-dp-c5p">
+                                        <rect key="frame" x="160" y="104" width="85" height="31"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="85" id="Jdp-td-qpc"/>
+                                            <constraint firstAttribute="width" constant="85" id="lnc-mW-gLL"/>
+                                        </constraints>
+                                        <state key="normal" title="Clear User">
+                                            <color key="titleColor" red="0.6056138029" green="0.96815514339999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clearUsername:" destination="vXZ-lx-hvc" eventType="touchDown" id="iPl-hW-3aO"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>

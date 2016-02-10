@@ -12,7 +12,7 @@ protocol UserAPIDelegate {
     /**
     * Register a user
     */
-    func registerUser(username: String, deviceToken: String, tags: [String: String]?, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void)
+    func registerUser(username: String, deviceToken: String, allowMutipleUsersPerDevice: Bool, tags: [String: String]?, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void)
     
     /**
     * Unregister the current user

@@ -25,11 +25,11 @@ class UserAPI: UserAPIDelegate {
     func registerUser(username: String, deviceToken: String, allowMutipleUsersPerDevice: Bool, tags: [String: String]?, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         
         
-        let urlStr = "/app/users/\(username)/\(deviceToken)/\(allowMutipleUsersPerDevice)"
+        let urlStr = "/app/users/\(username)/\(deviceToken)"
         
         let body = [String: String]()
        
-        restHandler.postBody(urlStr, body: body, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
+        restHandler.postBody(urlStr, body: body, method: allowMutipleUsersPerDevice ? "POST" : "PUT", onSuccess: onSuccess, onFailure: onFailure)
         
     }
     

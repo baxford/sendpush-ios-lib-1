@@ -50,9 +50,9 @@
 			<key>APIUrl</key>
 			<string>http://baxford.ngrok.io</string>
 			<key>PlatformID</key>
-			<string>3</string>
+			<string>1</string>
 			<key>PlatformSecret</key>
-			<string>8f57509536c7ad217b504d83e7d3c6a343146c9870fdcbdbc52b672a14525bc8</string>
+			<string>809dd9bda0c008126249f7c236d4adc0b9878774bd7a904eeec90a10bf2ef44c</string>
 		</dict>
 		<key>production</key>
 		<dict>

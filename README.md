@@ -112,7 +112,7 @@ Bob Axford, bob@sendpush.co
 
 ## License
 
-Sendpushlib is available under the ??? license. See the LICENSE file for more info.
+Sendpushlib is available under the Apache 2.0 license. See the LICENSE file for more info.
 
 
 ## Usage

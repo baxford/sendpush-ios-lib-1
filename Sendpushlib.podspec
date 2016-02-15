@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "Sendpushlib"
-  s.version          = "1.0.1"
+  s.version          = "1.0.0"
   s.summary          = "Library for use with Sendpush"
 
 # This description is used to generate tags and improve search results.
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.homepage         = "http://sendpush.co/"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "Bob Axford" => "bob@figjamit.com.au", "Timothy Marks" => "tim@sendpush.co" }
+  s.author           = { "Bob Axford" => "bob@sendpush.co", "Timothy Marks" => "tim@sendpush.co" }
   s.source           = { :git => "https://github.com/sendpush/sendpush-ios-lib.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
@@ -35,7 +35,5 @@ Pod::Spec.new do |s|
     'Sendpushlib' => ['Pod/Assets/*.png']
   }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'JSONWebToken', '1.4.0'
 end

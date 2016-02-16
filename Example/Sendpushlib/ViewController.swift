@@ -31,7 +31,7 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
         badge.delegate=self
         environment.delegate = self
         environment.dataSource = self
-        environmentData = ["development", "test", "staging", "production"]
+        environmentData = ["development", "staging", "production"]
 //        environmentData = ["staging", "production"]
         //check if we have a previous selection for environment
         let prefs = NSUserDefaults.standardUserDefaults()
@@ -45,8 +45,7 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
 //        }
         environment.selectRow(selectedEnv, inComponent: 0, animated: true)
         let env = environmentData[selectedEnv]
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.bootstrapSendPush(env)
+        bootstrap(env)
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,11 +69,19 @@ class ViewController: UIViewController, UITextFieldDelegate,  UIPickerViewDelega
     }
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let env = environmentData[row]
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.bootstrapSendPush(env)
-        
+        bootstrap(env)
     }
 
+    func bootstrap(env: String) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        var prefix = ""
+        if (env == "production") {
+            prefix = ""
+        } else {
+            prefix = env + "_"
+        }
+        appDelegate.bootstrapSendPush(prefix)
+    }
     
     @IBAction func registerForPush(sender: AnyObject) {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate

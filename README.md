@@ -19,7 +19,7 @@ pod "Sendpushlib"
 ## Configuration
 
 In your Info.plist file, create a Dictionary with a key of 'Sendpush',
-then add Keys for APIUrl, PlatformID and PlatformSecret in the info.plist file. 
+then add Keys for PlatformID and PlatformSecret in the info.plist file. 
 The value for these should be strings and are available from the 'Manage Platforms' area of the Sendpush admin area.
 
 ## Bootstrapping
@@ -27,37 +27,34 @@ The value for these should be strings and are available from the 'Manage Platfor
 To bootstrap sendpush, import the library into your AppDelegate:
 
 import Sendpushlib
-
-import Fabric
-import Crashlytics
-
+    
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var sendpush: SendPush?
+    var sendpush: SendPush
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // start Fabric
-        Fabric.with([Crashlytics.self])
+    override init() {
         // setup the sendpush library
-        let sendpush = SendPush.push.bootstrap()
-
-        self.sendpush = sendpush
-
-        return true
+        self.sendpush = SendPush.sharedInstance
+        // bootstrap the instance 
+        self.sendpush.bootstrap()
+        super.init()
     }
+    ...
+}
 
 ## Registering a device for push notifications
 
 At a suitable place in your application flow, request push notifications from the user:
-
-    
     func registerForPush() {
         // request push notifications
-        if let sp = sendpush {
-            sp.setupPush()
-        }
+        sendpush.requestPush()
+    }
+
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        // Now that the user has registered for push, we need to register it with Sendpush
+        sendpush.registerDevice(deviceToken)
     }
 
 
@@ -70,42 +67,21 @@ Once a user has accepted push notifications, you need to register their device t
 
 ## Registering a Username
 
-When you have access to the current users name (eg on successful login), register this with the sendpush API
+When you have access to the current users name (eg on successful login), register this with the sendpush API.
 
-    func setUsername(username: String, tags: [String: String]) {
-        if (username.isEmpty) {
-            let notifiAlert = UIAlertView()
-            notifiAlert.title = "Username Required"
-            notifiAlert.message = "Please enter a username"
-            notifiAlert.addButtonWithTitle("OK")
-            notifiAlert.show()
-        } else {
-            if let sp = sendpush {
-                sp.registerUser(username, tags: tags)
-                let notifiAlert = UIAlertView()
-                notifiAlert.title = "User Set"
-                notifiAlert.message = "User Set to \(username)"
-                notifiAlert.addButtonWithTitle("OK")
-                notifiAlert.show()
-            }
-        }
-    }
+    sendpush.registerUser(username, tags: tags)
+
+If you want to allow more than one user to login on the same device, set allowMutipleUsersPerDevice to true
+
+    sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
+
 
 ## Clearing a username
 
 When the user is no longer associated with this device (eg on logging out), de-register their  username with the sendpush API:
 
-    func clearUsername() {
-        if let sp = sendpush {
-            sp.unregisterUser()
-            let notifiAlert = UIAlertView()
-            notifiAlert.title = "User Cleared"
-            notifiAlert.message = "User cleared"
-            notifiAlert.addButtonWithTitle("OK")
-            notifiAlert.show()
-        }
-    }    
-
+    sendpush.unregisterUser(username)
+    
 ## Author
 
 Bob Axford, bob@sendpush.co

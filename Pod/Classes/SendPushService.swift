@@ -24,8 +24,9 @@ class SendPushService: SendPushDelegate {
     ** init
     ** This function initializes the SendPush library
     */
-    convenience init(pushNotificationDelegate: PushRegistrationDelegate, sendpushConfig: NSDictionary) {
-        let config = SendPushConfig(sendpushConfig: sendpushConfig)
+    convenience init(pushNotificationDelegate: PushRegistrationDelegate, prefix: String) {
+
+        let config = SendPushConfig(prefix: prefix)
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
         let sessionService = SessionService(restHandler: restHandler)
@@ -102,7 +103,7 @@ class SendPushService: SendPushDelegate {
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    func registerUser(username: String, tags: [String: String]?) {
+    func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool=false) {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring registerUser")
             return
@@ -119,7 +120,7 @@ class SendPushService: SendPushDelegate {
                 NSLog("Error in registerUser, status: \(statusCode), message: \(message)")
                 prefs.setValue(false, forKey: SendPushConstants.USER_REGISTERED)
             }
-            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: config.allowMutipleUsersPerDevice,
+            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: allowMutipleUsersPerDevice,
                 tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
         }
         

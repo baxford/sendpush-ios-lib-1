@@ -15,31 +15,41 @@ class SendPushConfig {
     let platformID: String
     let platformSecret: String
     let valid: Bool
-    let allowMutipleUsersPerDevice: Bool
     
-    convenience init(sendpushConfig: NSDictionary) {
+    convenience init(prefix: String="") {
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        
+        // read configuration for sendpush
+        var sendpushConfig: NSDictionary = ["test":"tesT"]
+        
+        if let dict = myDict {
+            if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
+                sendpushConfig = sendpush as! NSDictionary
+            }
+        }
         var valid = true;
         var apiUrl: String
         var platformID: String
         var platformSecret: String
-        var allowMutipleUsersPerDevice: Bool
         
-        if let url = sendpushConfig.valueForKey("APIUrl") as? String {
+        if let url = sendpushConfig.valueForKey(prefix + "APIUrl") as? String {
             apiUrl = url
         } else {
             NSLog("SendPush Exception: No APIUrl in info.plist")
-            apiUrl = "invalid"
-            valid = false
+            apiUrl = "http://api.sendpush.co"
         }
         
-        if let pid = sendpushConfig.valueForKey("PlatformID") as? String {
+        if let pid = sendpushConfig.valueForKey(prefix + "PlatformID") as? String {
             platformID = pid
         } else {
             NSLog("SendPush Exception: No PlatformID in info.plist")
             platformID = "invalid"
             valid = false
         }
-        if let secret = sendpushConfig.valueForKey("PlatformSecret") as? String {
+        if let secret = sendpushConfig.valueForKey(prefix + "PlatformSecret") as? String {
             platformSecret = secret
         } else {
             NSLog("SendPush Exception: No PlatformSecret in info.plist")
@@ -47,32 +57,17 @@ class SendPushConfig {
             valid = false
         }
         
-        if let secret = sendpushConfig.valueForKey("PlatformSecret") as? String {
-            platformSecret = secret
-        } else {
-            NSLog("SendPush Exception: No PlatformSecret in info.plist")
-            platformSecret = "invalid"
-            valid = false
-        }
         
-        if let allowMultipleUsers = sendpushConfig.valueForKey("MultipleUsersPerDevice") as? Bool {
-            allowMutipleUsersPerDevice = allowMultipleUsers
-        } else {
-            allowMutipleUsersPerDevice = false
-        }
-        
-        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, valid: valid,
-            allowMutipleUsersPerDevice: allowMutipleUsersPerDevice)
+        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, valid: valid)
     }
     
     /**
      * Initialiser
      */
-    init(apiUrl: String, platformID: String, platformSecret: String, valid: Bool, allowMutipleUsersPerDevice: Bool) {
+    init(apiUrl: String, platformID: String, platformSecret: String, valid: Bool) {
         self.apiUrl = apiUrl
         self.platformID = platformID
         self.platformSecret = platformSecret
         self.valid = valid
-        self.allowMutipleUsersPerDevice = allowMutipleUsersPerDevice
     }
 }

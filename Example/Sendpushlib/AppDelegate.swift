@@ -7,11 +7,12 @@
 //
 
 import UIKit
-import Sendpushlib
 
 import Fabric
 import Crashlytics
 
+import Sendpushlib
+    
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -31,23 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func bootstrapSendPush(environment:String) {
+    func bootstrapSendPush(prefix:String) {
         // bootstrap sendpush with whatever environment is default
-        var myDict: NSDictionary?
-        if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
-            myDict = NSDictionary(contentsOfFile: path)
-        }
-        
-        // read configuration for sendpush
-        if let dict = myDict {
-            if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
-                if let env = (NSDictionary:sendpush.valueForKey(environment)) {
-                    self.sendpush.bootstrap(env as! NSDictionary)
-                    self.sendpush.restartSession()
-                }
-            }
-        }
-
+        self.sendpush.bootstrap(prefix)
+        self.sendpush.restartSession()
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -124,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            sendpush.registerUser(username, tags: tags)
+            sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
             let notifiAlert = UIAlertView()
             notifiAlert.title = "User Set"
             notifiAlert.message = "User Set to \(username)"

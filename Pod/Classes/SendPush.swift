@@ -33,10 +33,10 @@ public class SendPush: SendPushDelegate {
     /*
     * Bootstrap configures sendpush and must be called before any other functions are called.
     */
-    @objc public func bootstrap(sendpushConfig: NSDictionary) {
+    @objc public func bootstrap(prefix: String = "") {
         // to enhance testability keep this as simple as possible and delegate all calls to the send push service
         // Also use a protocol and extension to allow us to mock out UIApplication using the PushNotificationDelegate protocol
-        self.service = SendPushService(pushNotificationDelegate: UIApplication.sharedApplication(), sendpushConfig: sendpushConfig)
+        self.service = SendPushService(pushNotificationDelegate: UIApplication.sharedApplication(), prefix: prefix)
     }
     
     /*
@@ -74,7 +74,7 @@ public class SendPush: SendPushDelegate {
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    @objc public func registerUser(username: String, tags: [String: String]?) {
+    @objc public func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool = false) {
         if checkBootstrapped() {
             // do this in a background thread to avoid blocking main thread
             dispatch_async(dispatch_get_global_queue(priority, 0)) {

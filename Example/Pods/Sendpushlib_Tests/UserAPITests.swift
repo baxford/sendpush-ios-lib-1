@@ -43,7 +43,7 @@ class UserAPITests: BaseTest {
         stub(http(.PUT,uri: endpoint), builder: http(200))
         
         
-        self.userAPI.registerUser(username, deviceToken: token, tags:tags, onSuccess: expectSuccess(expectation, expectedStatus: 200), onFailure: dontExpectFailure(expectation))
+        self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice:false, tags:tags, onSuccess: expectSuccess(expectation, expectedStatus: 200), onFailure: dontExpectFailure(expectation))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "userAPI Error")
         }
@@ -54,7 +54,7 @@ class UserAPITests: BaseTest {
         stub(http(.PUT,uri: endpoint), builder: http(500))
         
         
-        self.userAPI.registerUser(username, deviceToken: token, tags:tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 500))
+        self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice:false, tags:tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 500))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "userAPI Error")
         }
@@ -65,7 +65,7 @@ class UserAPITests: BaseTest {
         stub(http(.PUT,uri: endpoint), builder: failure(NSError(domain:"Sendpush",code:1000, userInfo:["error":"true"])))
         
         
-        self.userAPI.registerUser(username, deviceToken: token, tags:tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 503))
+        self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice:false, tags:tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 503))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "userAPI Error")
         }

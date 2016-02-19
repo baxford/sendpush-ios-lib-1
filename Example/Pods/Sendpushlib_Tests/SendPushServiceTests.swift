@@ -162,7 +162,7 @@ class SendPushServiceTests: BaseTest {
         prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
         
         // call our register function
-        service.unregisterUser()
+        service.unregisterUser(username)
         
         // ensure that the API is called
         XCTAssertTrue(userAPI.unregisterCalled)

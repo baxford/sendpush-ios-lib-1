@@ -23,7 +23,7 @@ class SendPushConfig {
         }
         
         // read configuration for sendpush
-        var sendpushConfig: NSDictionary = ["test":"tesT"]
+        var sendpushConfig: NSDictionary = [:]
         
         if let dict = myDict {
             if let sendpush = (NSDictionary:dict.objectForKey("SendPush")) {
@@ -39,7 +39,7 @@ class SendPushConfig {
             apiUrl = url
         } else {
             NSLog("SendPush Exception: No APIUrl in info.plist")
-            apiUrl = "http://api.sendpush.co"
+            apiUrl = "https://api.sendpush.co"
         }
         
         if let pid = sendpushConfig.valueForKey(prefix + "PlatformID") as? String {

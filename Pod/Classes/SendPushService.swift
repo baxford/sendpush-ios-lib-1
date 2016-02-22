@@ -146,7 +146,7 @@ class SendPushService: SendPushDelegate {
         }
     }
     
-    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String]) {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring sendPushToUsername")
             return
@@ -158,6 +158,6 @@ class SendPushService: SendPushDelegate {
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in sendPushToUsername, status: \(statusCode), message: \(message)")
         }
-        self.pushSendAPI.sendPushToUsername(username, pushMessage: pushMessage, tags: tags, onSuccess: successHandler, onFailure: failureHandler)
+        self.pushSendAPI.sendPushToUsername(username, pushMessage: pushMessage, tags: tags, metadata: metadata, onSuccess: successHandler, onFailure: failureHandler)
     }
 }

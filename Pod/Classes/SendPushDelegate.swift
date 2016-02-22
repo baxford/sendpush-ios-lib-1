@@ -40,6 +40,6 @@ public protocol SendPushDelegate {
     /*
     * Send a push to the given username
     */
-    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String])
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String])
     
 }

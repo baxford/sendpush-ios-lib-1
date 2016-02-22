@@ -15,7 +15,8 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		C25DEA284DE61F6CC4406C0B /* Pods_Sendpushlib_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC4F6DA91A217B16781DD393 /* Pods_Sendpushlib_Tests.framework */; };
 		C442E9481BD4CBA700285B4D /* Sendpushlib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C442E9471BD4CBA700285B4D /* Sendpushlib.framework */; };
-		C468EED41C58829A00051394 /* clap.caf in Resources */ = {isa = PBXBuildFile; fileRef = C468EED31C58829A00051394 /* clap.caf */; };
+		C4DA372F1C7ADD65006967D9 /* clap.caf in Resources */ = {isa = PBXBuildFile; fileRef = C468EED31C58829A00051394 /* clap.caf */; };
+		C4DA37311C7ADF06006967D9 /* applause.wav in Resources */ = {isa = PBXBuildFile; fileRef = C4DA37301C7ADF06006967D9 /* applause.wav */; };
 		DECBD972D22940371136877D /* Pods_Sendpushlib_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFD5D60F71BF58DC75FD2D27 /* Pods_Sendpushlib_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		922B0120ACE57F7BB81F22C7 /* Pods-Sendpushlib_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sendpushlib_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sendpushlib_Tests/Pods-Sendpushlib_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C442E9471BD4CBA700285B4D /* Sendpushlib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sendpushlib.framework; path = "Pods/../build/Debug-iphoneos/Sendpushlib.framework"; sourceTree = "<group>"; };
 		C468EED31C58829A00051394 /* clap.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = clap.caf; sourceTree = "<group>"; };
+		C4DA37301C7ADF06006967D9 /* applause.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = applause.wav; sourceTree = "<group>"; };
 		CC7DA45F630DC16EE47676EE /* Pods-Sendpushlib_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sendpushlib_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sendpushlib_Tests/Pods-Sendpushlib_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		DFD5D60F71BF58DC75FD2D27 /* Pods_Sendpushlib_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sendpushlib_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E584651ECD2B09C2A2C18561 /* Pods-Sendpushlib_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sendpushlib_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sendpushlib_Example/Pods-Sendpushlib_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -98,7 +100,8 @@
 		607FACD21AFB9204008FA782 /* Example for Sendpushlib */ = {
 			isa = PBXGroup;
 			children = (
-				C468EED11C58823800051394 /* Library */,
+				C4DA37301C7ADF06006967D9 /* applause.wav */,
+				C468EED31C58829A00051394 /* clap.caf */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -164,22 +167,6 @@
 				FC4F6DA91A217B16781DD393 /* Pods_Sendpushlib_Tests.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C468EED11C58823800051394 /* Library */ = {
-			isa = PBXGroup;
-			children = (
-				C468EED21C58824000051394 /* Sounds */,
-			);
-			name = Library;
-			sourceTree = "<group>";
-		};
-		C468EED21C58824000051394 /* Sounds */ = {
-			isa = PBXGroup;
-			children = (
-				C468EED31C58829A00051394 /* clap.caf */,
-			);
-			name = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,7 +261,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C468EED41C58829A00051394 /* clap.caf in Resources */,
+				C4DA372F1C7ADD65006967D9 /* clap.caf in Resources */,
+				C4DA37311C7ADF06006967D9 /* applause.wav in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,

@@ -150,7 +150,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            sendpush.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+            // set some dummy metadata
+            let metadata = ["metaKey": "metaValue"]
+            sendpush.sendPushToUsername(username, pushMessage: pushMessage, tags: tags, metadata: metadata)
             let notifiAlert = UIAlertView()
             notifiAlert.title = "Push Sent"
             notifiAlert.message = "Push sent: \"\(pushMessage)\""

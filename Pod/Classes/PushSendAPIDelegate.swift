@@ -13,5 +13,5 @@ protocol PushSendAPIDelegate {
     /**
     * Send a push to a given username
     */
-    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void)
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String], onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void)
 }

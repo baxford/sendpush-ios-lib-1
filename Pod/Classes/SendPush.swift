@@ -98,11 +98,11 @@ public class SendPush: SendPushDelegate {
     /*
     * Send a push to the given username
     */
-    @objc public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String]) {
+    @objc public func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String]) {
         if checkBootstrapped() {
             // do this in a background thread to avoid blocking main thread
             dispatch_async(dispatch_get_global_queue(priority, 0)) {
-                self.service?.sendPushToUsername(username, pushMessage: pushMessage, tags: tags)
+                self.service?.sendPushToUsername(username, pushMessage: pushMessage, tags: tags, metadata: metadata)
             }
         }
     }

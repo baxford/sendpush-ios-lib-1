@@ -19,7 +19,6 @@ protocol PushRegistrationDelegate {
     
     func registerUserNotificationSettings(notificationSettings: UIUserNotificationSettings)
     
-    
 }
 
 /*

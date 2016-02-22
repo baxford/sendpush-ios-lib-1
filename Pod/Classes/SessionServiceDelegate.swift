@@ -10,5 +10,9 @@ import Foundation
 
 protocol SessionServiceDelegate {
     
+    func startHeartbeat()
+    
+    func stopHeartbeat()
+    
     func restartSession()
 }

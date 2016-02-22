@@ -48,6 +48,25 @@ class SendPushService: SendPushDelegate {
         self.deviceAPI = deviceAPI
         self.pushSendAPI = pushSendAPI
         self.sendPushData = sendPushData
+        
+        // listen to app activate/inactivate
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameActive:",
+            name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameInactive:",
+            name: UIApplicationWillResignActiveNotification, object: nil)
+    }
+    
+    @objc func applicationBecameActive(notification: NSNotification) {
+        // if they've said ok to push, re-request push so we refresh the token
+        let prefs = NSUserDefaults.standardUserDefaults()
+        if let _ = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+           self.requestPush()
+        }
+        self.sessionService.startHeartbeat()
+    }
+    
+    @objc func applicationBecameInactive(notification: NSNotification) {
+        self.sessionService.stopHeartbeat()
     }
     
     func restartSession() {

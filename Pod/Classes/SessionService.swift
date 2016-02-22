@@ -38,22 +38,6 @@ public class SessionService: SessionServiceDelegate {
             prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
         }
         self.sessionAPI = SessionAPI(restHandler: restHandler, deviceUniqueID: self.deviceUniqueID)
-        
-        // listen to some events for session start/end
-        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameActive:",
-            name: UIApplicationDidBecomeActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameInactive:",
-            name: UIApplicationWillResignActiveNotification, object: nil)
-        
-        
-    }
-    
-    @objc func applicationBecameActive(notification: NSNotification) {
-        self.startHeartbeat()
-    }
-    
-    @objc func applicationBecameInactive(notification: NSNotification) {
-        self.stopHeartbeat()
     }
     
     func restartSession() {

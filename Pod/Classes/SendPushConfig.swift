@@ -58,7 +58,9 @@ class SendPushConfig {
             platformSecret = "invalid"
             valid = false
         }
-        
+        if let debugVal = sendpushConfig.objectForKey("debug") as? NSNumber where debugVal.boolValue == true {
+            debug = true
+        }
         
         self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, debug: debug, valid: valid)
     }

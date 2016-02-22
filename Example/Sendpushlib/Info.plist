@@ -43,6 +43,8 @@
 	</dict>
 	<key>SendPush</key>
 	<dict>
+		<key>debug</key>
+		<true/>
 		<key>development_PlatformSecret</key>
 		<string>809dd9bda0c008126249f7c236d4adc0b9878774bd7a904eeec90a10bf2ef44c</string>
 		<key>development_PlatformID</key>

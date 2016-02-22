@@ -10,7 +10,20 @@ import Foundation
 
 protocol SendPushDataDelegate {
     
-    func storeValue(key: String, value: String)
+    func getDeviceUniqueId() -> String
+    
+    func addUser(username: String, tags: [String:String]?, allowMutipleUsersPerDevice: Bool)
+    
+    func setUserRegistered(username: String)
 
-    func getValue(key: String) -> String?
+    func unregisterUser(username: String)
+    
+    func getUsernames() -> [String]
+    
+    func getUsernamesAndTags() -> [String:[String:String]]
+    
+    func optedInPushDeviceToken() -> String?
+    
+    func setDeviceToken(deviceToken: String)
+    
 }

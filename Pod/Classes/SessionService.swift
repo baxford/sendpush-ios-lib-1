@@ -13,31 +13,24 @@ public class SessionService: SessionServiceDelegate {
     // intervals at which we post heartbeats - up to max of every 5 mins
     let hearbeatIntervals: [Int]
     var sessionAPI: SessionAPIDelegate
-    var deviceUniqueID: String
     var heartbeatCount = 0
     var sessionInProgress = false
     var heartbeatActive = false
     let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+    let sendPushData: SendPushDataDelegate
     let debug:Bool
     /*
     ** init
     ** This function initializes the SendPush library
     ** It hooks into app lifecycle, validates the info.plist settings and registers for push
     */
-    init(restHandler: SendPushRESTHandler, intervals: [Int] = [0, 2, 5, 15, 30, 45, 60, 120, 180, 240, 300], debug: Bool = false) {
-    
+    init(restHandler: SendPushRESTHandler, sendPushData: SendPushDataDelegate, intervals: [Int] = [0, 2, 5, 15, 30, 45, 60, 120, 180, 240, 300], debug: Bool = false) {
+        self.sendPushData = sendPushData
         self.hearbeatIntervals = intervals
         self.debug = debug
-        let prefs = NSUserDefaults.standardUserDefaults()
-        
-        if let deviceId = prefs.stringForKey(SendPushConstants.DEVICE_UNIQUE_ID) {
-            self.deviceUniqueID = deviceId
-        } else {
-            let uuid = NSUUID().UUIDString
-            self.deviceUniqueID = uuid
-            prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
-        }
-        self.sessionAPI = SessionAPI(restHandler: restHandler, deviceUniqueID: self.deviceUniqueID)
+
+        let deviceUniqueId = sendPushData.getDeviceUniqueId()
+        self.sessionAPI = SessionAPI(restHandler: restHandler, sendPushData: sendPushData, deviceUniqueID: deviceUniqueId)
     }
     
     func restartSession() {

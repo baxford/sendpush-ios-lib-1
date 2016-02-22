@@ -35,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate {
     func bootstrapSendPush(prefix:String) {
         // bootstrap sendpush with whatever environment is default
         self.sendpush.bootstrap(prefix)
-        self.sendpush.restartSession()
     }
     
     func applicationWillResignActive(application: UIApplication) {

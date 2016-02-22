@@ -26,7 +26,7 @@ class SendPushService: SendPushDelegate {
     */
     convenience init(pushNotificationDelegate: PushRegistrationDelegate, prefix: String) {
         
-        let config = SendPushConfig(prefix: prefix)
+        let config = SendPushConfig(prefix: prefix, allowMutipleUsersPerDevice: true)
         let sendPushData = SendPushData()
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
@@ -102,13 +102,20 @@ class SendPushService: SendPushDelegate {
         }
         
         func successHandler(statusCode: Int, data: NSData?) {
-            
+            var refreshUsers = false
+            if let previousDeviceToken = sendPushData.optedInPushDeviceToken() {
+                if tokenString != previousDeviceToken {
+                    refreshUsers = true
+                }
+            }
             sendPushData.setDeviceToken(tokenString)
             // now if the user isn't registered, we need to do it now
             let userData = sendPushData.getUsernamesAndTags()
             //if multiple users are in there, we need to register them all
-            for (username, userTags) in userData {
-                registerUser(username as! String, tags: userTags as? [String:String], )
+            if (refreshUsers) {
+                for (username, userTags) in userData {
+                    registerUser(username as! String, tags: userTags as? [String:String])
+                }
             }
     
         }
@@ -123,12 +130,13 @@ class SendPushService: SendPushDelegate {
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool) {
+    func registerUser(username: String, tags: [String: String]?) {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring registerUser")
             return
         }
-        sendPushData.addUser(username, tags:tags, allowMutipleUsersPerDevice: allowMutipleUsersPerDevice)
+        // store this user details, we may not be able to register them straight away.
+        sendPushData.addUser(username, tags:tags, allowMutipleUsersPerDevice: config.allowMutipleUsersPerDevice)
         // we can only register this user once we have their device token, so let's check
         if let token = sendPushData.optedInPushDeviceToken() {
             
@@ -139,7 +147,7 @@ class SendPushService: SendPushDelegate {
             func failureHandler(statusCode: Int, message: String) {
                 NSLog("Error in registerUser, status: \(statusCode), message: \(message)")
             }
-            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: allowMutipleUsersPerDevice,
+            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: config.allowMutipleUsersPerDevice,
                 tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
         }
         

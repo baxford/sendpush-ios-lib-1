@@ -74,7 +74,7 @@ public class SendPush: SendPushDelegate {
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    @objc public func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool = false) {
+    @objc public func registerUser(username: String, tags: [String: String]?) {
         if checkBootstrapped() {
             // do this in a background thread to avoid blocking main thread
             dispatch_async(dispatch_get_global_queue(priority, 0)) {

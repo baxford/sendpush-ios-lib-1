@@ -132,7 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
+            sendpush.registerUser(username, tags: tags)
             let notifiAlert = UIAlertView()
             notifiAlert.title = "User Set"
             notifiAlert.message = "User Set to \(username)"

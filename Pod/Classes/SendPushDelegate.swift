@@ -30,7 +30,7 @@ public protocol SendPushDelegate {
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool)
+    func registerUser(username: String, tags: [String: String]?)
     
     /*
     * Unregister the current user

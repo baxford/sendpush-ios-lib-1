@@ -16,8 +16,9 @@ class SendPushConfig {
     let platformSecret: String
     let debug: Bool
     let valid: Bool
+    let allowMutipleUsersPerDevice: Bool
     
-    convenience init(prefix: String="") {
+    convenience init(prefix: String="", allowMutipleUsersPerDevice: Bool) {
         var myDict: NSDictionary?
         if let path = NSBundle.mainBundle().pathForResource("Info", ofType: "plist") {
             myDict = NSDictionary(contentsOfFile: path)
@@ -62,17 +63,19 @@ class SendPushConfig {
             debug = true
         }
         
-        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, debug: debug, valid: valid)
+        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, debug: debug,
+            valid: valid, allowMutipleUsersPerDevice: allowMutipleUsersPerDevice)
     }
     
     /**
      * Initialiser
      */
-    init(apiUrl: String, platformID: String, platformSecret: String, debug: Bool, valid: Bool) {
+    init(apiUrl: String, platformID: String, platformSecret: String, debug: Bool, valid: Bool, allowMutipleUsersPerDevice: Bool) {
         self.apiUrl = apiUrl
         self.platformID = platformID
         self.platformSecret = platformSecret
         self.debug = debug
         self.valid = valid
+        self.allowMutipleUsersPerDevice = allowMutipleUsersPerDevice
     }
 }

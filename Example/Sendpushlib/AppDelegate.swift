@@ -7,14 +7,14 @@
 //
 
 import UIKit
-
+import AVFoundation
 import Fabric
 import Crashlytics
 
 import Sendpushlib
     
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, AVAudioPlayerDelegate {
 
     var window: UIWindow?
     var sendpush: SendPush
@@ -82,17 +82,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 notifiAlert.message = "\"\(alert)\"" as String
             }
         }
-
+        
+        // test to see if sounds will play ok,
+        if let sound = self.setupAudioPlayerWithFile("applause", type:"wav") {
+            sound.delegate = self
+            sound.prepareToPlay()
+            sound.play()
+        }
         notifiAlert.title = "Received Push"
         
         notifiAlert.addButtonWithTitle("OK")
         notifiAlert.show()
     }
     
-    func setSendpushEnvironment(environment: String) {
-        
-    }
     
+    func setupAudioPlayerWithFile(file:NSString, type:NSString) -> AVAudioPlayer?  {
+        //1
+        let path = NSBundle.mainBundle().pathForResource(file as String, ofType: type as String)
+        let url = NSURL.fileURLWithPath(path!)
+        
+        //2
+        var audioPlayer:AVAudioPlayer?
+        
+        // 3
+        do {
+            try audioPlayer = AVAudioPlayer(contentsOfURL: url)
+        } catch {
+            print("Player not available")
+        }
+        
+        return audioPlayer
+    }
+
     /*
     * Call this when we want to ask our user to accept push notifications (at the right time)
     */

@@ -29,7 +29,7 @@ class SendPushService: SendPushDelegate {
         let config = SendPushConfig(prefix: prefix)
         // setup our dependencies
         let restHandler = SendPushRESTHandler(apiUrl: config.apiUrl, platformID: config.platformID, platformSecret: config.platformSecret)
-        let sessionService = SessionService(restHandler: restHandler)
+        let sessionService = SessionService(restHandler: restHandler, debug: config.debug)
         let userAPI = UserAPI(restHandler: restHandler)
         let deviceAPI = DeviceAPI(restHandler: restHandler)
         let pushSendAPI = PushSendAPI(restHandler: restHandler)
@@ -153,7 +153,9 @@ class SendPushService: SendPushDelegate {
         }
         let prefs = NSUserDefaults.standardUserDefaults()
         func successHandler(statusCode: Int, data: NSData?) {
-            NSLog("Successful sendPushToUsername")
+            if (config.debug) {
+                NSLog("Successful sendPushToUsername")
+            }
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in sendPushToUsername, status: \(statusCode), message: \(message)")

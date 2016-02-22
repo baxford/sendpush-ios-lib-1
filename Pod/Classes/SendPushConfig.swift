@@ -14,6 +14,7 @@ class SendPushConfig {
     // Instance vars
     let platformID: String
     let platformSecret: String
+    let debug: Bool
     let valid: Bool
     
     convenience init(prefix: String="") {
@@ -31,6 +32,7 @@ class SendPushConfig {
             }
         }
         var valid = true;
+        var debug = false;
         var apiUrl: String
         var platformID: String
         var platformSecret: String
@@ -58,16 +60,17 @@ class SendPushConfig {
         }
         
         
-        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, valid: valid)
+        self.init(apiUrl: apiUrl, platformID: platformID, platformSecret: platformSecret, debug: debug, valid: valid)
     }
     
     /**
      * Initialiser
      */
-    init(apiUrl: String, platformID: String, platformSecret: String, valid: Bool) {
+    init(apiUrl: String, platformID: String, platformSecret: String, debug: Bool, valid: Bool) {
         self.apiUrl = apiUrl
         self.platformID = platformID
         self.platformSecret = platformSecret
+        self.debug = debug
         self.valid = valid
     }
 }

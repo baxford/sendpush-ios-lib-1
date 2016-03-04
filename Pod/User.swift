@@ -8,14 +8,9 @@
 
 import Foundation
 
-class User {
+struct User {
 
     let username: String
     let tags: [String:String]
-    
-    init (username: String, tags: [String:String]) {
-        self.username = username
-        self.tags = tags
-    }
     
 }

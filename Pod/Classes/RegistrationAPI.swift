@@ -21,14 +21,20 @@ class RegistrationAPI: RegistrationAPIDelegate {
         self.restHandler = restHandler
     }
     
-    func register(deviceToken: String, previousDeviceToken: String?, users: [User], onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func register(deviceToken: String, registration: Registration, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
         
         
         let urlStr = "/app/devices/\(deviceToken)"
         
-        let body = [String: String]()
         
-        restHandler.postBody(urlStr, body: body, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
+        do {
+            let json = try NSJSONSerialization.dataWithJSONObject((registration as! AnyObject), options: [])
+            restHandler.postBody(urlStr, body: json, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
+        } catch {
+            print("SendPush Exception: Serializing json \(error)")
+            return
+        }
+
         
     }
 }

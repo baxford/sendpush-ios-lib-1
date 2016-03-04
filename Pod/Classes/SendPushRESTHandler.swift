@@ -23,9 +23,10 @@ public class SendPushRESTHandler {
         self.apiUrl = apiUrl
     }
     
-    func postBody(url: String, body: NSDictionary, method: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+    func postBody(url: String, body: NSData, method: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+        
         let urlStr = "\(self.apiUrl)\(url)"
-
+        
         let url = NSURL(string: urlStr.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
         let request = NSMutableURLRequest(URL: url!)
         let session = NSURLSession.sharedSession()
@@ -49,23 +50,30 @@ public class SendPushRESTHandler {
             }
         }
         
+        let authToken = signRequest(body)
+        
+        request.HTTPBody = body
+        request.HTTPMethod = method
+        request.addValue("bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let task = session.dataTaskWithRequest(request, completionHandler: completionHandler)
+        
+        task.resume()
+    }
+    
+    func postBody(url: String, body: NSDictionary, method: String, onSuccess: (statusCode: Int, data: NSData?) -> Void, onFailure: (statusCode: Int, message: String) -> Void) {
+        var json: NSData
         do {
-            let json =  try NSJSONSerialization.dataWithJSONObject(body, options: [])
-            let authToken = signRequest(json)
-           
-            request.HTTPBody = json
-            request.HTTPMethod = method
-            request.addValue("bearer \(authToken)", forHTTPHeaderField: "Authorization")
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/json", forHTTPHeaderField: "Accept")
-            
-            let task = session.dataTaskWithRequest(request, completionHandler: completionHandler)
-            
-            task.resume()
+            json =  try NSJSONSerialization.dataWithJSONObject(body, options: [])
+            self.postBody(url, body: json, method: method, onSuccess: onSuccess, onFailure: onFailure)
         } catch {
             print("SendPush Exception: Serializing json \(error)")
             return
         }
+
+ 
         
     }
     

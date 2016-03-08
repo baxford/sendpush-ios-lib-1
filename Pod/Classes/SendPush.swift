@@ -69,31 +69,43 @@ public class SendPush: SendPushDelegate {
             }
         }
     }
-    
+
     
     /*
     * This is called as soon as the username is available (eg at Login)
     */
-    @objc public func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool = false) {
+    @objc public func setCurrentUsers(users: [User]) {
         if checkBootstrapped() {
             // do this in a background thread to avoid blocking main thread
             dispatch_async(dispatch_get_global_queue(priority, 0)) {
-                self.service?.registerUser(username, tags: tags)
+                self.service?.setCurrentUsers(users)
             }
         }
     }
     
     /*
-    * Unregister the current user
+    * This is called as soon as the username is available (eg at Login)
     */
-    @objc public func unregisterUser(username: String) {
-        if checkBootstrapped() {
-            // do this in a background thread to avoid blocking main thread
-            dispatch_async(dispatch_get_global_queue(priority, 0)) {
-                self.service?.unregisterUser(username)
-            }
-        }
-    }
+//    @objc public func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool = false) {
+//        if checkBootstrapped() {
+//            // do this in a background thread to avoid blocking main thread
+//            dispatch_async(dispatch_get_global_queue(priority, 0)) {
+//                self.service?.registerUser(username, tags: tags)
+//            }
+//        }
+//    }
+//    
+//    /*
+//    * Unregister the current user
+//    */
+//    @objc public func unregisterUser(username: String) {
+//        if checkBootstrapped() {
+//            // do this in a background thread to avoid blocking main thread
+//            dispatch_async(dispatch_get_global_queue(priority, 0)) {
+//                self.service?.unregisterUser(username)
+//            }
+//        }
+//    }
     
     /*
     * Send a push to the given username

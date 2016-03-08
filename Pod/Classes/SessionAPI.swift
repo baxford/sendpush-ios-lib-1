@@ -12,29 +12,29 @@ public class SessionAPI: SessionAPIDelegate {
     
     // intervals at which we post heartbeats - up to max of every 5 mins
     let restHandler: SendPushRESTHandler
-    let deviceUniqueID: String
+    let sendPushData:SendPushDataDelegate
+    
     /*
     ** init
     ** This function initializes the sessionAPI
     */
-    init(restHandler: SendPushRESTHandler, deviceUniqueID: String) {
+    init(restHandler: SendPushRESTHandler, sendPushData: SendPushDataDelegate) {
         
         self.restHandler = restHandler
-        self.deviceUniqueID = deviceUniqueID
+        self.sendPushData = sendPushData
         
     }
 
     func buildSessionBody() -> NSDictionary {
-        let prefs = NSUserDefaults.standardUserDefaults()
         
         let body: NSMutableDictionary = [
-            "device_id": self.deviceUniqueID
+            "device_id": self.sendPushData.getDeviceUniqueId()
         ]
         
-        if let username = prefs.stringForKey(SendPushConstants.USERNAME) {
-            body.setValue(username, forKey: "username")
-        }
-        if let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+        let usernames = self.sendPushData.getUsernames()
+        body.setValue(usernames, forKey: "username")
+        
+        if let deviceToken = self.sendPushData.optedInPushDeviceToken() {
             body.setValue(deviceToken, forKey:"device_token")
         }
 

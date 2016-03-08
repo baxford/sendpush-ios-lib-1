@@ -112,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-            sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
+//            sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
             let notifiAlert = UIAlertView()
             notifiAlert.title = "User Set"
             notifiAlert.message = "User Set to \(username)"
@@ -125,7 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     * This simulates a user logging out
     */
     func clearUsername(username: String) {
-        sendpush.unregisterUser(username)
+//        sendpush.unregisterUser(username)
         let notifiAlert = UIAlertView()
         notifiAlert.title = "User Cleared"
         notifiAlert.message = "User cleared"

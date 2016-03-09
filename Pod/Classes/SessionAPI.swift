@@ -31,8 +31,10 @@ public class SessionAPI: SessionAPIDelegate {
             "device_id": self.sendPushData.getDeviceUniqueId()
         ]
         
-        let usernames = self.sendPushData.getUsernames()
-        body.setValue(usernames, forKey: "username")
+        if let usernames = self.sendPushData.getUsernames() {
+            let usernamesStr = usernames.joinWithSeparator(",")
+            body.setValue(usernamesStr, forKey: "username")
+        }
         
         if let deviceToken = self.sendPushData.optedInPushDeviceToken() {
             body.setValue(deviceToken, forKey:"device_token")

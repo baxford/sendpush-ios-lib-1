@@ -10,7 +10,7 @@ import Foundation
 
 public class User: NSObject, JSONable {
 
-    let username: String?
+    public let username: String?
     let tags: [String:String]?
     
     public init (username: String?, tags: [String: String]?) {

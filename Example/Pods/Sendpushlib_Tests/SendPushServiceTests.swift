@@ -137,7 +137,7 @@ class SendPushServiceTests: BaseTest {
         
         
         // ensure it's saved properly
-        let savedUsers = sendPushData.getUsers()!
+        let savedUsers = sendPushData.getUsers()
 //        XCTAssertEqual(savedUsers, users)
     }
     

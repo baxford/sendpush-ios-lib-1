@@ -46,15 +46,18 @@ class SendPushData: SendPushDataDelegate {
     }
     
     func getUsernames() -> [String]? {
-        var usernames = [String]()
         if let users = self.getUsers() {
+                    var usernames = [String]()
+        
             for user in users {
                 if let username = user.username {
                     usernames.append(username)
                 }
             }
+            return usernames
+        } else {
+            return nil
         }
-        return usernames
     }
     
     func getUsers() -> [User]? {
@@ -66,9 +69,9 @@ class SendPushData: SendPushDataDelegate {
                 }
             }
             return users
+        } else {
+            return nil
         }
-        
-        return nil
     }
     
     func setUsers(users: [User]) {

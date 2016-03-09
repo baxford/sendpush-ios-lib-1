@@ -41,10 +41,11 @@ public class Registration: NSObject, JSONable {
         if let anyUsers = self.users {
             for user:User in anyUsers {
                 usersJson.append(user.asJson())
-            }   
+            }
+            json.setValue(usersJson, forKey: "users")
         }
         json.setValue(deviceJson, forKey: "device")
-        json.setValue(usersJson, forKey: "users")
+
         json.setValue(previousDeviceToken, forKey: "previousDeviceToken")
         return json
     }

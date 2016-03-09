@@ -27,9 +27,14 @@ public protocol SendPushDelegate {
     func registerDevice(deviceToken: NSData!)
     
     /*
-    * Set the current usernames
+    * Set the current users
     */
     func setCurrentUsers(username: [User])
+    
+    /*
+    * Get the current users
+    */
+    func getCurrentUsers() -> [User]?
     
     /*
     * Send a push to the given username

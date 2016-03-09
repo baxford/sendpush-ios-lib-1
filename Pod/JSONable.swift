@@ -8,6 +8,9 @@
 
 import Foundation
 
+/*
+* Simple protocol to allow marshalling/unmarshalling to/from JSON
+*/
 protocol JSONable {
     
     init(json: NSDictionary)

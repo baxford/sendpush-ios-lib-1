@@ -24,7 +24,6 @@ class SendPushService: SendPushDelegate {
     ** This function initializes the SendPush library
     */
     convenience init(pushNotificationDelegate: PushRegistrationDelegate, prefix: String) {
-
         let config = SendPushConfig(prefix: prefix)
         let sendPushData = SendPushData()
         // setup our dependencies
@@ -62,6 +61,7 @@ class SendPushService: SendPushDelegate {
         if let _ = sendPushData.optedInPushDeviceToken() {
             self.requestPush()
         }
+        // now start the heartbeat
         self.sessionService.startHeartbeat()
     }
     
@@ -125,13 +125,12 @@ class SendPushService: SendPushDelegate {
             NSLog("Error in registerDevice, status: \(statusCode), message: \(message)")
         }
 
-        
         self.registrationAPI.register(registration, onSuccess: successHandler,  onFailure: failureHandler)
     }
     
     
     /*
-    * Set the current usernames
+    * Set the current users
     */
     func setCurrentUsers(users: [User]) {
         if (!config.valid) {
@@ -145,6 +144,7 @@ class SendPushService: SendPushDelegate {
             func successHandler(statusCode: Int, data: NSData?) {
                 
             }
+            
             func failureHandler(statusCode: Int, message: String) {
                 NSLog("Error in registerUser, status: \(statusCode), message: \(message)")
             }
@@ -160,51 +160,15 @@ class SendPushService: SendPushDelegate {
     }
     
     /*
-    * This is called as soon as the username is available (eg at Login)
+    * Get the current users
     */
-//    func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool=false) {
-//        if (!config.valid) {
-//            NSLog("Sendpush not configured properly, ignoring registerUser")
-//            return
-//        }
-//        let prefs = NSUserDefaults.standardUserDefaults()
-//        prefs.setValue(username, forKey: SendPushConstants.USERNAME)
-//        prefs.setValue(tags, forKey: SendPushConstants.USER_TAGS)
-//        if let token = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
-//            // we can only register this user once we have their device token, so let's check
-//            func successHandler(statusCode: Int, data: NSData?) {
-//                prefs.setValue(true, forKey: SendPushConstants.USER_REGISTERED)
-//            }
-//            func failureHandler(statusCode: Int, message: String) {
-//                NSLog("Error in registerUser, status: \(statusCode), message: \(message)")
-//                prefs.setValue(false, forKey: SendPushConstants.USER_REGISTERED)
-//            }
-//            self.userAPI.registerUser(username, deviceToken: token, allowMutipleUsersPerDevice: allowMutipleUsersPerDevice,
-//                tags: tags, onSuccess: successHandler,  onFailure: failureHandler)
-//        }
-//        
-//    }
-//    
-//    func unregisterUser(username: String) {
-//        if (!config.valid) {
-//            NSLog("Sendpush not configured properly, ignoring unregisterUser")
-//            return
-//        }
-//        let prefs = NSUserDefaults.standardUserDefaults()
-//        
-//        func successHandler(statusCode: Int, data: NSData?) {
-//            prefs.removeObjectForKey(SendPushConstants.USERNAME)
-//            prefs.removeObjectForKey(SendPushConstants.USER_REGISTERED)
-//            prefs.removeObjectForKey(SendPushConstants.USER_TAGS)
-//        }
-//        func failureHandler(statusCode: Int, message: String) {
-//            NSLog("Error in unRegisterUser, status: \(statusCode), message: \(message)")
-//        }
-//        if let deviceToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) as String? {
-//            self.userAPI.unregisterUser(username, deviceToken: deviceToken, onSuccess: successHandler, onFailure: failureHandler)
-//        }
-//    }
+    func getCurrentUsers() -> [User]? {
+        return sendPushData.getUsers()
+    }
     
+    /*
+    * Send a push to the user
+    */
     func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String]) {
         if (!config.valid) {
             NSLog("Sendpush not configured properly, ignoring sendPushToUsername")

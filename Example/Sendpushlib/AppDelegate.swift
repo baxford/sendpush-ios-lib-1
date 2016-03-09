@@ -112,7 +112,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             notifiAlert.addButtonWithTitle("OK")
             notifiAlert.show()
         } else {
-//            sendpush.registerUser(username, tags: tags, allowMutipleUsersPerDevice: true)
+            var users = [User]()
+            if let currentUsers = sendpush.getCurrentUsers() {
+                users = currentUsers
+            }
+            let user = User(username: username, tags: tags)
+            var userExists = false
+            
+            for existingUser in users as [User] {
+                if (existingUser.username == user.username) {
+                    userExists =  true
+                }
+            }
+            if (!userExists) {
+                users.append(user)
+            }
+            sendpush.setCurrentUsers(users)
+            
             let notifiAlert = UIAlertView()
             notifiAlert.title = "User Set"
             notifiAlert.message = "User Set to \(username)"
@@ -125,12 +141,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     * This simulates a user logging out
     */
     func clearUsername(username: String) {
-//        sendpush.unregisterUser(username)
-        let notifiAlert = UIAlertView()
-        notifiAlert.title = "User Cleared"
-        notifiAlert.message = "User cleared"
-        notifiAlert.addButtonWithTitle("OK")
-        notifiAlert.show()
+        if (username.isEmpty) {
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "Username Required"
+            notifiAlert.message = "Please enter a username"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
+        } else {
+            var newUsers = [User]()
+            if let currentUsers = sendpush.getCurrentUsers() {
+                for existingUser in currentUsers as [User] {
+                    if (existingUser.username != username) {
+                        newUsers.append(existingUser)
+                    }
+                }
+            }
+            sendpush.setCurrentUsers(newUsers)
+            let notifiAlert = UIAlertView()
+            notifiAlert.title = "User Cleared"
+            notifiAlert.message = "User cleared"
+            notifiAlert.addButtonWithTitle("OK")
+            notifiAlert.show()
+        }
     }
     
     /*

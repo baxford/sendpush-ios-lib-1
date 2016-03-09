@@ -14,15 +14,17 @@ public class Device: NSObject, JSONable {
     let platform: String?
     let type: String?
     let model: String?
+    let osVersion: String?
     let timezone: String?
     let language: String?
     
-    init(token: String?, uid: String?, platform: String?, type: String?, model: String?, timezone: String?, language: String?) {
+    init(token: String?, uid: String?, platform: String?, type: String?, model: String?, osVersion: String?, timezone: String?, language: String?) {
         self.token = token
         self.uid = uid
         self.platform = platform
         self.type = type
         self.model = model
+        self.osVersion = osVersion
         self.timezone = timezone
         self.language = language
     }
@@ -33,9 +35,10 @@ public class Device: NSObject, JSONable {
         let platform = json.valueForKey("platform") as? String
         let type = json.valueForKey("type") as? String
         let model = json.valueForKey("model") as? String
+        let osVersion = json.valueForKey("osVersion") as? String
         let timezone = json.valueForKey("timezone") as? String
         let language = json.valueForKey("language") as? String
-        self.init(token: token, uid: uid, platform: platform, type: type, model: model, timezone: timezone, language: language)
+        self.init(token: token, uid: uid, platform: platform, type: type, model: model, osVersion: osVersion, timezone: timezone, language: language)
     }
     
     func asJson() -> NSDictionary {
@@ -45,6 +48,7 @@ public class Device: NSObject, JSONable {
         json.setValue(platform, forKey: "platform")
         json.setValue(type, forKey: "type")
         json.setValue(model, forKey: "model")
+        json.setValue(osVersion, forKey: "osVersion")
         json.setValue(timezone, forKey: "timezone")
         json.setValue(language, forKey: "language")
         return json

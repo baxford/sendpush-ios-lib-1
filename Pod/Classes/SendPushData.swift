@@ -21,7 +21,8 @@ class SendPushData: SendPushDataDelegate {
     func getDevice() -> Device {
         let dev = UIDevice.currentDevice()
         let model = dev.model
-        let devType = dev.systemName + " " + dev.systemVersion
+        let devType = dev.systemName
+        let osVersion = dev.systemVersion
         let tz = NSTimeZone.localTimeZone().abbreviation as String!
         let langId = NSLocale.preferredLanguages().first as String!
         let device = Device(
@@ -30,6 +31,7 @@ class SendPushData: SendPushDataDelegate {
             platform: "ios",
             type: devType,
             model: model,
+            osVersion: osVersion,
             timezone: tz,
             language: langId
         )

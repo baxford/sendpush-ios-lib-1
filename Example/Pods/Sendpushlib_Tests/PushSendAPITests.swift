@@ -23,11 +23,12 @@ class PushSendAPITests: BaseTest {
     let username = "push_username"
     let message = "push message"
     let tags = ["tag":"value"]
+    let metadata = ["meta":"value"]
     
     override func setUp() {
         let rh = SendPushRESTHandler(apiUrl: apiURL, platformID: platformID, platformSecret: platformSecret)
         self.pushSendAPI = PushSendAPI(restHandler: rh)
-        self.endpoint = "\(apiURL)/app/users/\(username)/messages"
+        self.endpoint = "\(apiURL)/messages/users/\(username)"
         super.setUp()
     }
     
@@ -43,7 +44,7 @@ class PushSendAPITests: BaseTest {
         stub(http(.POST,uri: endpoint), builder: http(200))
         
         
-        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, onSuccess: expectSuccess(expectation, expectedStatus: 200), onFailure: dontExpectFailure(expectation))
+        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, metadata:metadata, onSuccess: expectSuccess(expectation, expectedStatus: 200), onFailure: dontExpectFailure(expectation))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "PushSendAPI Error")
         }
@@ -54,7 +55,7 @@ class PushSendAPITests: BaseTest {
         stub(http(.POST,uri: endpoint), builder: http(500))
         
         
-        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 500))
+        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, metadata:metadata, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 500))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "PushSendAPI Error")
         }
@@ -65,7 +66,7 @@ class PushSendAPITests: BaseTest {
         stub(http(.POST,uri: endpoint), builder: failure(NSError(domain:"Sendpush",code:1000, userInfo:["error":"true"])))
         
         
-        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 503))
+        self.pushSendAPI.sendPushToUsername(username, pushMessage: message, tags: tags, metadata:metadata, onSuccess: dontExpectSuccess(expectation), onFailure: expectFailure(expectation, expectedStatus: 503))
         self.waitForExpectationsWithTimeout(5) { error in
             XCTAssertNil(error, "PushSendAPI Error")
         }

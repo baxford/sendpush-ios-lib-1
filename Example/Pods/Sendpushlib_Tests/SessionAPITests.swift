@@ -24,7 +24,8 @@ class SessionAPITests: BaseTest {
     
     override func setUp() {
         let rh = SendPushRESTHandler(apiUrl: apiURL, platformID: platformID, platformSecret: platformSecret)
-        self.sessionAPI = SessionAPI(restHandler: rh, deviceUniqueID: deviceUID)
+        let sendPushData = SendPushData()
+        self.sessionAPI = SessionAPI(restHandler: rh, sendPushData: sendPushData)
         self.endpoint = "\(apiURL)/app/session"
         super.setUp()
     }

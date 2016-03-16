@@ -13,46 +13,24 @@ public class SessionService: SessionServiceDelegate {
     // intervals at which we post heartbeats - up to max of every 5 mins
     let hearbeatIntervals: [Int]
     var sessionAPI: SessionAPIDelegate
-    var deviceUniqueID: String
     var heartbeatCount = 0
     var sessionInProgress = false
     var heartbeatActive = false
     let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+    let sendPushData: SendPushDataDelegate
+    let debug:Bool
+    
     /*
     ** init
     ** This function initializes the SendPush library
     ** It hooks into app lifecycle, validates the info.plist settings and registers for push
     */
-    init(restHandler: SendPushRESTHandler, intervals: [Int] = [0, 2, 5, 15, 30, 45, 60, 120, 180, 240, 300]) {
-    
+    init(restHandler: SendPushRESTHandler, sendPushData: SendPushDataDelegate, intervals: [Int] = [0, 2, 5, 15, 30, 45, 60, 120, 180, 240, 300], debug: Bool = false) {
+        self.sendPushData = sendPushData
         self.hearbeatIntervals = intervals
+        self.debug = debug
         
-        let prefs = NSUserDefaults.standardUserDefaults()
-        
-        if let deviceId = prefs.stringForKey(SendPushConstants.DEVICE_UNIQUE_ID) {
-            self.deviceUniqueID = deviceId
-        } else {
-            let uuid = NSUUID().UUIDString
-            self.deviceUniqueID = uuid
-            prefs.setValue(self.deviceUniqueID, forKey: SendPushConstants.DEVICE_UNIQUE_ID)
-        }
-        self.sessionAPI = SessionAPI(restHandler: restHandler, deviceUniqueID: self.deviceUniqueID)
-        
-        // listen to some events for session start/end
-        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameActive:",
-            name: UIApplicationDidBecomeActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self,selector: "applicationBecameInactive:",
-            name: UIApplicationWillResignActiveNotification, object: nil)
-        
-        
-    }
-    
-    @objc func applicationBecameActive(notification: NSNotification) {
-        self.startHeartbeat()
-    }
-    
-    @objc func applicationBecameInactive(notification: NSNotification) {
-        self.stopHeartbeat()
+        self.sessionAPI = SessionAPI(restHandler: restHandler, sendPushData: sendPushData)
     }
     
     func restartSession() {
@@ -66,17 +44,21 @@ public class SessionService: SessionServiceDelegate {
         self.heartbeatActive = true
         self.heartbeatCount = 0
         self.sessionInProgress = false
-
+        
         self.beat()
     }
     
     func stopHeartbeat() {
-        NSLog("Stopping session heartbeat")
+        if (debug) {
+            NSLog("Stopping session heartbeat")
+        }
         self.heartbeatActive = false
         self.sessionInProgress = false
         // fire off a final call to extendSession
         func successHandler(statusCode: Int, data: NSData?) {
-            NSLog("Session ended")
+            if (debug) {
+                NSLog("Session ended")
+            }
         }
         func failureHandler(statusCode: Int, message: String) {
             NSLog("Error in endSession, status: \(statusCode), message: \(message)")
@@ -90,11 +72,13 @@ public class SessionService: SessionServiceDelegate {
         }
         let backoff = hearbeatIntervals[heartbeatCount]
         let interval = Double(backoff) * 1.0
-        NSLog("Session heartbeat \(self.heartbeatCount), next at \(interval)")
+        if (debug) {
+            NSLog("Session heartbeat \(self.heartbeatCount), next at \(interval)")
+        }
         if (self.heartbeatActive) {
             delay(interval, closure: { [weak self] () -> () in
                 self?.beat()
-            })
+                })
         }
     }
     
@@ -118,7 +102,9 @@ public class SessionService: SessionServiceDelegate {
         }
         if (!self.sessionInProgress) {
             func successHandler(statusCode: Int, data: NSData?) {
-                NSLog("Session started")
+                if (debug) {
+                    NSLog("Session started")
+                }
                 // set to true so that once the first success (ie startSession) succeeds, from then on we'll call extendSession
                 self.sessionInProgress = true
                 self.queueNextHeartbeat()
@@ -126,7 +112,9 @@ public class SessionService: SessionServiceDelegate {
             sessionAPI.startSession(successHandler, onFailure: failureHandler)
         } else {
             func successHandler(statusCode: Int, data: NSData?) {
-                NSLog("Session extended")
+                if (debug) {
+                    NSLog("Session extended")
+                }
                 self.queueNextHeartbeat()
             }
             sessionAPI.extendSession(successHandler, onFailure: failureHandler)

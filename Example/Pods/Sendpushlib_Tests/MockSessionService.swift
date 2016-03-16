@@ -9,6 +9,15 @@
 import Foundation
 
 class MockSessionService: SessionServiceDelegate {
+    
+    func startHeartbeat() {
+        
+    }
+    
+    func stopHeartbeat() {
+        
+    }
+    
     func restartSession() {
     }
 }

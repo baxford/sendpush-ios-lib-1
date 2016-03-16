@@ -26,20 +26,19 @@ public protocol SendPushDelegate {
     */
     func registerDevice(deviceToken: NSData!)
     
+    /*
+    * Set the current users
+    */
+    func setCurrentUsers(username: [User])
     
     /*
-    * This is called as soon as the username is available (eg at Login)
+    * Get the current users
     */
-    func registerUser(username: String, tags: [String: String]?, allowMutipleUsersPerDevice: Bool)
-    
-    /*
-    * Unregister the current user
-    */
-    func unregisterUser(username: String)
+    func getCurrentUsers() -> [User]?
     
     /*
     * Send a push to the given username
     */
-    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String])
+    func sendPushToUsername(username: String, pushMessage: String, tags: [String:String], metadata: [String:String])
     
 }

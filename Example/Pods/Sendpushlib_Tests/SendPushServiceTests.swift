@@ -10,32 +10,44 @@ import XCTest
 
 class SendPushServiceTests: BaseTest {
     
-    let prefs = NSUserDefaults.standardUserDefaults()
     let config = SendPushConfig(apiUrl:"APIURL", platformID: "PlatformID", platformSecret: "secret", valid: true);
     let pushRegistrationDelegate = MockPushRegistrationDelegate()
-    let userAPI = MockUserAPI()
-    let deviceAPI = MockDeviceAPI()
+    let registrationAPI = MockRegistrationAPI()
     let pushSendAPI = MockPushSendAPI()
     let sessionService = MockSessionService()
-    let sendPushData = SendPushData(platformID: "pid")
-    var service: SendPushService!
+
     let deviceTokenString = "1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff"
-    let username = "username"
-    let userTags = ["": ""]
+    var device: Device!
+    
+    let sendPushData = MockSendPushData()
+    var service: SendPushService!
+
+    
+    var users: [User] = []
     var deviceToken: NSMutableData?
     
+
     override func setUp() {
         super.setUp()
         
-        userAPI.reset();
-        deviceAPI.reset();
+        let user1 = User(username: "user1", tags: ["tag1": "value1"])
+        let user2 = User(username: "user2", tags: ["tag2": "value2"])
+        self.users = [user1, user2]
         
-        prefs.removeObjectForKey(SendPushConstants.USER_REGISTERED)
-        prefs.removeObjectForKey(SendPushConstants.USERNAME)
-        prefs.removeObjectForKey(SendPushConstants.USER_TAGS)
-        prefs.removeObjectForKey(SendPushConstants.DEVICE_TOKEN)
+        self.device = Device(
+            token: deviceTokenString,
+            uid:"uid",
+            platform: "ios",
+            type: "type",
+            model: "model",
+            timezone: "GMT",
+            language: "en"
+        )
         
-        service = SendPushService(config: config, pushNotificationDelegate: pushRegistrationDelegate,sessionService: sessionService, userAPI: userAPI, deviceAPI: deviceAPI, pushSendAPI: pushSendAPI, sendPushData: sendPushData)
+        registrationAPI.reset();
+        sendPushData.reset(device)
+        service = SendPushService(config: config, pushNotificationDelegate: pushRegistrationDelegate,sessionService: sessionService, registrationAPI: registrationAPI,
+            pushSendAPI: pushSendAPI, sendPushData: sendPushData)
         
         // make it look like the NSData we get for a device Token
         deviceToken = NSMutableData(capacity: deviceTokenString.characters.count / 2)
@@ -44,8 +56,6 @@ class SendPushServiceTests: BaseTest {
             let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
             deviceToken?.appendBytes([num] as [UInt8], length: 1)
         }
-
-        
         
     }
     
@@ -61,20 +71,17 @@ class SendPushServiceTests: BaseTest {
         XCTAssertEqual(pushRegistrationDelegate.notificationSettings, expected)
     }
     
-    func testRegisterDeviceBeforeUser() {
+    func testRegisterDeviceBeforeUsers() {
         // call our register function
         service.registerDevice(deviceToken)
         
-        // ensure that the API is called
-        XCTAssertEqual(deviceAPI.deviceToken, deviceTokenString)
-        
-        // as there is no user set yet, the userAPI shouldn't have been called
-        XCTAssertNil(userAPI.username)
-        XCTAssertNil(userAPI.deviceToken)
+        // ensure that the API is called with just the device
+        XCTAssertEqual(registrationAPI.registration?.device.token!, device.token)
+        // as there is no user set yet, the users should be nil
+//        XCTAssertNil(registrationAPI.registration?.users!)
         
         // ensure it's saved properly
-        let prefs = NSUserDefaults.standardUserDefaults()
-        if let savedToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+        if let savedToken = sendPushData.optedInPushDeviceToken() {
             XCTAssertEqual(savedToken, deviceTokenString)
         } else {
             XCTFail("Expected saved device token")
@@ -83,23 +90,19 @@ class SendPushServiceTests: BaseTest {
     }
     
     func testRegisterDeviceAfterUser() {
-
-        prefs.setValue(false, forKey: SendPushConstants.USER_REGISTERED)
-        prefs.setValue(username, forKey: SendPushConstants.USERNAME)
-        prefs.setValue(userTags, forKey: SendPushConstants.USER_TAGS)
+        sendPushData.setUsers(users)
 
         // call our register function
         service.registerDevice(deviceToken)
         
         // ensure that the API is called
-        XCTAssertEqual(deviceAPI.deviceToken, deviceTokenString)
+        XCTAssertEqual(registrationAPI.registration?.device.token, device.token)
         
         // as there is a user set , the userAPI should have been called
-        XCTAssertEqual(userAPI.username, username)
-        XCTAssertEqual(userAPI.deviceToken, deviceTokenString)
-        
+//        XCTAssertEqual(registrationAPI.registration!.users!, users)
+
         // ensure it's saved properly
-        if let savedToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
+        if let savedToken = sendPushData.optedInPushDeviceToken() {
             XCTAssertEqual(savedToken, deviceTokenString)
         } else {
             XCTFail("Expected saved device token")
@@ -108,81 +111,35 @@ class SendPushServiceTests: BaseTest {
     }
     
     
-    func testRegisterUserBeforeDevice() {
+    func testRegisterUsersBeforeDevice() {
         
         // call our register function
-        service.registerUser(username, tags: userTags)
+        service.setCurrentUsers(users)
         
         // ensure that no API is called as we need both deviceToken and username to register the user with API
-        XCTAssertNil(userAPI.username)
-        XCTAssertNil(userAPI.deviceToken)
+        XCTAssertNil(registrationAPI.registration)
 
         
         // ensure it's saved properly
-        if let savedUsername = prefs.stringForKey(SendPushConstants.USERNAME) {
-            XCTAssertEqual(savedUsername, username)
-        } else {
-            XCTFail("Expected saved device token")
-        }
-        // ensure the registered flag is not yet set
-        let registered = prefs.boolForKey(SendPushConstants.USER_REGISTERED)
-        XCTAssertEqual(registered, false)
+
     }
     
     
-    func testRegisterUserAfterDevice() {
-        prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
+    func testRegisterUsersAfterDevice() {
+        sendPushData.setDeviceToken(deviceTokenString)
         
         // call our register function
-        service.registerUser(username, tags: userTags)
+        service.setCurrentUsers(users)
         
         // ensure that no API is called as we need both deviceToken and username to register the user with API
-        XCTAssertEqual(userAPI.username, username)
-        XCTAssertEqual(userAPI.deviceToken, deviceTokenString)
+        XCTAssertEqual(registrationAPI.registration!.users!, users)
+        XCTAssertEqual(registrationAPI.registration!.device.token, deviceTokenString)
         
         
         // ensure it's saved properly
-        if let savedUsername = prefs.stringForKey(SendPushConstants.USERNAME), savedUserTags = prefs.objectForKey(SendPushConstants.USER_TAGS) as! [String:String]? {
-            XCTAssertEqual(savedUsername, username)
-            XCTAssertEqual(savedUserTags, userTags)
-        } else {
-            XCTFail("Expected saved device token")
-        }
-        // ensure the registered flag is now set
-        let registered = prefs.boolForKey(SendPushConstants.USER_REGISTERED)
-        XCTAssertEqual(registered, true)
-
+        let savedUsers = sendPushData.getUsers()
+//        XCTAssertEqual(savedUsers, users)
     }
     
     
-    func testUnregisterUser() {
-        prefs.setValue(true, forKey: SendPushConstants.USER_REGISTERED)
-        prefs.setValue(username, forKey: SendPushConstants.USERNAME)
-        prefs.setValue(userTags, forKey: SendPushConstants.USER_TAGS)
-        prefs.setValue(deviceTokenString, forKey: SendPushConstants.DEVICE_TOKEN)
-        
-        // call our register function
-        service.unregisterUser(username)
-        
-        // ensure that the API is called
-        XCTAssertTrue(userAPI.unregisterCalled)
-
-        // ensure it's cleared properly
-        if let _ = prefs.stringForKey(SendPushConstants.USERNAME){
-            XCTFail("Expected no saved username")
-        }
-        if let _ = prefs.objectForKey(SendPushConstants.USER_TAGS){
-            XCTFail("Expected no saved tags")
-        }
-        // ensure the registered flag is not set
-        let registered = prefs.boolForKey(SendPushConstants.USER_REGISTERED)
-        XCTAssertEqual(registered, false)
-        
-        // token should remain set
-        if let savedToken = prefs.stringForKey(SendPushConstants.DEVICE_TOKEN) {
-            XCTAssertEqual(savedToken, deviceTokenString)
-        } else {
-            XCTFail("Expected saved device token")
-        }
-    }
 }

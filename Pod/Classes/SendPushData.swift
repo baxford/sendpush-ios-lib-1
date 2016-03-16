@@ -78,7 +78,7 @@ class SendPushData: SendPushDataDelegate {
     }
     
     func setUsers(users: [User]) {
-        var usersJson = NSMutableArray()
+        let usersJson = NSMutableArray()
         for user:User in users {
             usersJson.addObject(user.asJson())
         }

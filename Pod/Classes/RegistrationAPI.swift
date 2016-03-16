@@ -26,15 +26,8 @@ class RegistrationAPI: RegistrationAPIDelegate {
         
         let urlStr = "/app/devices/\(registration.device.token!)"
         
-        
-        do {
-            let json = registration.asJson()
-            restHandler.postBody(urlStr, body: json, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
-        } catch {
-            print("SendPush Exception: Serializing json \(error)")
-            return
-        }
-
+        let json = registration.asJson()
+        restHandler.postBody(urlStr, body: json, method: "PUT", onSuccess: onSuccess, onFailure: onFailure)
         
     }
 }

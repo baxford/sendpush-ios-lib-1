@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.7</string>
+	<string>1.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -43,22 +43,24 @@
 	</dict>
 	<key>SendPush</key>
 	<dict>
-		<key>development_PlatformSecret</key>
-		<string>809dd9bda0c008126249f7c236d4adc0b9878774bd7a904eeec90a10bf2ef44c</string>
-		<key>development_PlatformID</key>
-		<string>1</string>
-		<key>development_APIUrl</key>
-		<string>http://baxford.ngrok.io</string>
-		<key>staging_APIUrl</key>
-		<string>http://stagepushapi.herokuapp.com</string>
-		<key>staging_PlatformSecret</key>
-		<string>2c39d64bfa66eee25c47da5eccaa9e4f322c22b6d64cc55cc086207879435eed</string>
-		<key>staging_PlatformID</key>
-		<string>12</string>
-		<key>PlatformSecret</key>
-		<string>12ae1cd077cee7eab194ae75291d0ad56e03378fe8fba79fdeb04089ee2148f7</string>
+		<key>APIUrl</key>
+		<string>http://api.sendpush.co</string>
 		<key>PlatformID</key>
 		<string>1</string>
+		<key>PlatformSecret</key>
+		<string>12ae1cd077cee7eab194ae75291d0ad56e03378fe8fba79fdeb04089ee2148f7</string>
+		<key>development_APIUrl</key>
+		<string>http://baxford.ngrok.io</string>
+		<key>development_PlatformID</key>
+		<string>1</string>
+		<key>development_PlatformSecret</key>
+		<string>809dd9bda0c008126249f7c236d4adc0b9878774bd7a904eeec90a10bf2ef44c</string>
+		<key>staging_APIUrl</key>
+		<string>http://stagepushapi.herokuapp.com</string>
+		<key>staging_PlatformID</key>
+		<string>12</string>
+		<key>staging_PlatformSecret</key>
+		<string>2c39d64bfa66eee25c47da5eccaa9e4f322c22b6d64cc55cc086207879435eed</string>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

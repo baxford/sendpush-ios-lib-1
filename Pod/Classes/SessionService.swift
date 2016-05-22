@@ -96,7 +96,7 @@ public class SessionService: SessionServiceDelegate {
     private func beat() {
         func failureHandler(statusCode: Int, message: String) {
             let msg = sessionInProgress ? "Error in extendSession" :  "Error in startSession"
-            NSLog("\(msg): \(statusCode), message: \(message)")
+            //NSLog("\(msg): \(statusCode), message: \(message)")
             
             self.queueNextHeartbeat()
         }

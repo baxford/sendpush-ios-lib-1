@@ -29,7 +29,7 @@ public protocol SendPushDelegate {
     /*
     * Set the current users
     */
-    func setCurrentUsers(username: [User])
+    func setCurrentUsers(users: [User])
     
     /*
     * Get the current users

@@ -12,7 +12,6 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		C25DEA284DE61F6CC4406C0B /* Pods_Sendpushlib_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC4F6DA91A217B16781DD393 /* Pods_Sendpushlib_Tests.framework */; };
 		C442E9481BD4CBA700285B4D /* Sendpushlib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C442E9471BD4CBA700285B4D /* Sendpushlib.framework */; };
 		C4DA372F1C7ADD65006967D9 /* clap.caf in Resources */ = {isa = PBXBuildFile; fileRef = C468EED31C58829A00051394 /* clap.caf */; };
@@ -40,7 +39,6 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* Sendpushlib_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Sendpushlib_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		709E77AEDE74A1DC740D7877 /* Pods-Sendpushlib_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sendpushlib_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sendpushlib_Example/Pods-Sendpushlib_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		7487A1B3A300F8DB9046FB52 /* Sendpushlib.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Sendpushlib.podspec; path = ../Sendpushlib.podspec; sourceTree = "<group>"; };
 		89A8830BCE5C434E70C80535 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -124,7 +122,6 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				607FACEB1AFB9204008FA782 /* Tests.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -398,7 +395,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
